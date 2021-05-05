@@ -1,4 +1,4 @@
-loadJSON('replace.or.parse.our.own.json',
+loadJSON('data-prep/replace.or.parse.our.own.json',
 (response)=>{
     // Parse JSON string into object
     //alternative parsing the .csv directly here would also work
