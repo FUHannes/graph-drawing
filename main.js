@@ -1,3 +1,4 @@
+/*
 loadJSON('data-prep/replace.or.parse.our.own.json',
 (response)=>{
     // Parse JSON string into object
@@ -5,7 +6,10 @@ loadJSON('data-prep/replace.or.parse.our.own.json',
     var data = JSON.parse(response);
     drawgraph(data)
 });
-
+*/
+prepareData().then(data =>
+    drawgraph(data)
+)
 
 drawgraph = (data)=>{
     width = 954
