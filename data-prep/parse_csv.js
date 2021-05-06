@@ -7,16 +7,35 @@ async function prepareData(){
             d_orig: directors[d.director_original-1].name,
             t_orig: d.title_original,
             y_orig: d.year_original,
-            d_fake: directors[d.director_remake-1].name,
-            t_fake: d.title_remake,
-            y_fake: d.year_remake
+            director: directors[d.director_remake-1].name,
+            title: d.title_remake,
+            year: d.year_remake
         };
     });
+    /*
+    stratify = d3.stratify()
+      .id(d => d.title)
+      .parentId(d => d.t_orig)
+
+      console.log(stratify)
+    data = stratify(edges)
+      console.log(data)
+    data = d3.hierarchy(data)
+    .sort((a, b) => d3.ascending(a.data.d_orig, b.data.d_orig))
+    */
     grouped  = d3.group(edges, d => d.t_orig)
-    //grouped = d3.nest()
-    //  .key(function(d) { return d.t_orig; })
-    //  .entries(edges);
-    return grouped
+    data = d3.hierarchy(grouped)
+      .sort((a, b) => d3.ascending(a.data.d_orig, b.data.d_orig))
+      .each(d => {
+        if (d.depth ==1 ){
+          d.data.title = d.data[0]
+          d.data.director = d.children[0].data.d_orig
+          d.data.year = d.children[0].data.y_orig
+        }
+      })
+      
+    console.log(data)
+    return data
 }
 
 function loadCSV(filename,callback){
