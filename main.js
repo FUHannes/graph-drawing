@@ -1,13 +1,24 @@
 
+options = {
+    show_titles: true,
+    show_timescale: true,
+    form:   //'rectangle'||
+            'circle',
+    sort:   'director'||
+            'year',
+}
+
+const sorts = {
+    director:   (a, b) => d3.ascending(a.data.id, b.data.id),
+    year:       (a, b) => d3.ascending(a.data.year, b.data.year)
+}
 prepareData().then(data =>
-    drawgraph(data)
+    drawgraph(
+        data
+        .sort(sorts[options.sort]) 
+    )
 )
 
-options = {
-    show_titles: false,
-    show_timescale: true,
-    form: 'rectangle',
-}
 
 drawgraph = (data)=>{
     width = 954
@@ -15,7 +26,7 @@ drawgraph = (data)=>{
 
     tree = d3.tree()
         .size([2 * Math.PI, radius])
-        .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth)
+        .separation((a, b) => (a.parent == b.parent ? 1 : 1) / a.depth)
 
     function autoBox() {
         document.body.appendChild(this);
@@ -37,6 +48,9 @@ drawgraph = (data)=>{
         function scale_radius(d){
             return scale_year(d.data.year)
         }
+
+        //nur in rectangle form
+        const scale_x = d => d.x*200
         
         const transform = d => {return{
             circle:`
@@ -45,7 +59,7 @@ drawgraph = (data)=>{
                 `,
 
             rectangle:`
-                translate(${scale_radius(d)},${d.x*100})
+                translate(${scale_radius(d)},${scale_x(d)})
                 `,
             
         }[options.form]}
@@ -66,7 +80,7 @@ drawgraph = (data)=>{
 
                     case "rectangle":
                         return  d3.linkVertical()
-                        .y(d => d.x*100)
+                        .y(scale_x)
                         .x(d => scale_radius(d))(d)
                     default:
                         break;
@@ -90,12 +104,12 @@ drawgraph = (data)=>{
         .selectAll("text")
         .data(root.descendants())
         .join("text")
-            .attr("transform", d => transform(d)+`
+            .attr("transform", d => transform(d)+ (options.form == "circle" ? `
             rotate(${d.x >= Math.PI ? 180 : 0})
-            `)
+            `: ``))
             .attr("dy", "0.31em")
             .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
-            .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+            .attr("text-anchor", d => (!(options.form == "circle") || d.x < Math.PI) === !d.children ? "start" : "end")
             .text(d =>  d.data.title )
             .attr('visibility', options.show_titles ? 'visible' : 'hidden')
             .clone(true).lower()
@@ -103,11 +117,19 @@ drawgraph = (data)=>{
     
         //jahrzenteringe
         if (options.show_timescale){
-            for(jahrzent=2;jahrzent<11;jahrzent++){
-                svg.append('circle')
-                .attr('r', scale_year(1900+jahrzent*10))
-                .attr('isRing', true)
+            switch (options.form) {
+                case `circle`:
+                    for(jahrzent=2;jahrzent<11;jahrzent++){
+                        svg.append('circle')
+                        .attr('r', scale_year(1900+jahrzent*10))
+                        .attr('isRing', true)
+                    }
+                    break;
+            
+                default:
+                    break;
             }
+            
         }
         return svg.attr("viewBox", autoBox).node();
     }

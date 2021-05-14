@@ -36,10 +36,6 @@ async function prepareData(){
           d.data.id = d.children[0].data.id_orig
         }
       })
-      
-      .sort((a, b) => d3.ascending(a.data.id, b.data.id)) // TODO verschiedene sortierungen
-      
-    console.log(data)
     return data
 }
 
