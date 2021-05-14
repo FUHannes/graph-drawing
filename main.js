@@ -49,6 +49,8 @@ drawgraph = (data)=>{
             return scale_year(d.data.year)
         }
 
+        const color = (d)=>`hsl(${d.data.id/92*360},100%,50%)`
+
         //nur in rectangle form
         const scale_x = d => d.x*200
         
@@ -63,14 +65,33 @@ drawgraph = (data)=>{
                 `,
             
         }[options.form]}
-        
 
+
+        //jahrzenteringe
+        if (options.show_timescale){
+            switch (options.form) {
+                case `circle`:
+                    for(jahrzent=2;jahrzent<11;jahrzent++){
+                        svg.append('circle')
+                        .attr('r', scale_year(1900+jahrzent*10))
+                        .attr('isRing', true)
+                    }
+                    break;
+            
+                default:
+                    break;
+            }
+            
+        }
+        
         //links zwischen datenpunkten
         svg.append("g")
             .attr("isLink", true)
         .selectAll("path")
         .data(root.links())
         .join("path")
+
+            // TODO : Links farbig machen? mit gradient
             .attr("d", d=>{
                 switch (options.form) {
                     case "circle":
@@ -94,7 +115,7 @@ drawgraph = (data)=>{
         .data(root.descendants())
         .join("circle")
             .attr("transform", transform)
-            .attr("fill", d => `hsl(${d.data.id/92*360},100%,50%)`)
+            .attr("fill", color)
             .attr("opacity", d => d.children ? ".5" : "1")
             .attr("isKnot", true))
     
@@ -111,26 +132,14 @@ drawgraph = (data)=>{
             .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
             .attr("text-anchor", d => (!(options.form == "circle") || d.x < Math.PI) === !d.children ? "start" : "end")
             .text(d =>  d.data.title )
+            .attr("fill",color)
+            .attr("fill","black")
             .attr('visibility', options.show_titles ? 'visible' : 'hidden')
             .clone(true).lower()
             .attr("stroke", "white");
+            
     
-        //jahrzenteringe
-        if (options.show_timescale){
-            switch (options.form) {
-                case `circle`:
-                    for(jahrzent=2;jahrzent<11;jahrzent++){
-                        svg.append('circle')
-                        .attr('r', scale_year(1900+jahrzent*10))
-                        .attr('isRing', true)
-                    }
-                    break;
-            
-                default:
-                    break;
-            }
-            
-        }
+        
         return svg.attr("viewBox", autoBox).node();
     }
 
