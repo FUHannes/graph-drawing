@@ -1,3 +1,9 @@
+// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay
+// TODO : split into multiple files
+// TODO : Zeit an achse
+// TODO : Zeitlinien im rectangle
+// TODO : warum colorcut zwischen alfred und dem 2t meissten
+
 
 options = {
     show_titles: true,
@@ -49,7 +55,7 @@ drawgraph = (data)=>{
             return scale_year(d.data.year)
         }
 
-        const color = (d)=>`hsl(${d.data.id/92*360},100%,50%)`
+        const color = (d)=>`hsl(${d.data.id/91*360},100%,50%)`
 
         //nur in rectangle form
         const scale_x = d => d.x*200
