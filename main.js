@@ -26,8 +26,7 @@ drawgraph = (data)=>{
 //Zeitskala 1918-1980 remakes 1927-2018
 
         function scale_radius(d){
-            console.log(d.y)
-            return 250 *(parseInt(d.data.year)-1918)/100 +200
+            return 300 *(parseInt(d.data.year)-1918)/100 +200
         }
 
         //links zwischen datenpunkten
@@ -41,7 +40,7 @@ drawgraph = (data)=>{
         .join("path")
             .attr("d", d3.linkRadial()
                 .angle(d => d.x)
-                .radius(d => scale_radius(d)))//*( parseInt(d.data.year)|| 1)));
+                .radius(d => scale_radius(d)))
         
         // knotenpunkte selbst
         svg.append("g")
@@ -49,11 +48,10 @@ drawgraph = (data)=>{
         .data(root.descendants())
         .join("circle")
             .attr("transform", d => `
-            `//rotate(${d.x * 180 / Math.PI - 90})
-            +`
+            rotate(${d.x * 180 / Math.PI - 90})
             translate(${scale_radius(d)},0)
             `)
-            .attr("opacity", d => d.children ? ".5" : "1")
+            .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
             .attr("fill", d => `hsl(${d.data.id/92*360},100%,50%)`)
             .attr("r", 2.5);
     
@@ -71,29 +69,50 @@ drawgraph = (data)=>{
             translate(${scale_radius(d)},0) 
             rotate(${d.x >= Math.PI ? 180 : 0})
             `)
-            .on('mouseover', function (d, i) {
+            .on('mouseover', function (e, d) {
                 d3.select(this).transition()
-                     .duration('300')
-                     .attr('opacity', '1');
-           })
+                     .duration('200')
+                     .attr('opacity', '1')
+                     .attr("font-size", 15)
+
+                
+                author.text(d.data.director);
+                year.text(d.data.year);
+                author.style("visibility", "visible");
+                return year.style("visibility", "visible");
+                
+
+ 
+            })
+
+            .on("mousemove", function(){
+                author.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+                return year.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+            })
+
            .on('mouseout', function (d, i) {
             d3.select(this).transition()
-                 .duration('300')
-                 .attr('opacity', '.3');
+                 .duration('200')
+                 .attr('opacity', '.3')
+                 .attr("font-size", 10)
+
+
+            author.style("visibility", "hidden");
+            return year.style("visibility", "hidden");
             })
             .attr("dy", "0.31em")
             .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
             .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
             .text(d =>  d.data.title )
             
-            .attr('opacity', '0')
+
+            .attr('opacity', '.3')
             .clone(true).lower()
             .attr("stroke", "white");
     
         //jahrzenteringe
         if (false){
             for(jahrzent=0;jahrzent<11;jahrzent++){
-                //d.data.year = 1980
                 svg.append('circle')
                 .attr('cx', 0)
                 .attr('cy', 0)
@@ -103,9 +122,29 @@ drawgraph = (data)=>{
                 .attr('fill', 'None');
             }
         }
+
+        var author = svg.append('text')
+            .style("visibility", "hidden")
+            .style("background", "none")
+            .attr("x", -20)
+            .attr("y", 0)   
+            .text("a simple author");
+            
+
+        var year = svg.append('text')
+            .attr("x", -20)
+            .attr("y", 20)
+            .attr("text-align", "center")            
+            .style("visibility", "hidden")
+            .style("background", "none")
+            .text("a simple author");
+
+
         return svg.attr("viewBox", autoBox).node();
+
     }
 
     d3.select("body").append(mainchart)
     
+
 }
