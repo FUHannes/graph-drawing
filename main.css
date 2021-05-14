@@ -1,0 +1,31 @@
+[isRing="true"]{
+    cx:0;
+    cy: 0;
+    stroke: #111;
+    opacity: .2;
+    fill: None;
+}
+
+[isKnot="true"]{
+    r:5;
+}
+
+[isTitles="true"]>text{
+    font-family: sans-serif;
+    font-size: .6em;
+    stroke-linejoin: round;
+    stroke-width: 3;
+    opacity: 0.3;
+}
+[isTitles="true"]>text:hover{
+    font-family: sans-serif;
+    font-size: 1.2em;
+    opacity: 1;
+}
+
+[isLink="true"]{
+    fill: none;
+    stroke: #555;
+    stroke-opacity: 0.4;
+    stroke-width: 1.5;
+}
