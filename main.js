@@ -4,9 +4,9 @@ prepareData().then(data =>
 )
 
 options = {
-    show_titles: true,
+    show_titles: false,
     show_timescale: true,
-    form: 'circle',
+    form: 'rectangle',
 }
 
 drawgraph = (data)=>{
@@ -38,10 +38,17 @@ drawgraph = (data)=>{
             return scale_year(d.data.year)
         }
         
-        const transform = d => `
-        rotate(${d.x * 180 / Math.PI - 90})
-        translate(${scale_radius(d)},0)
-        `
+        const transform = d => {return{
+            circle:`
+                rotate(${d.x * 180 / Math.PI - 90})
+                translate(${scale_radius(d)},0)
+                `,
+
+            rectangle:`
+                translate(${scale_radius(d)},${d.x*100})
+                `,
+            
+        }[options.form]}
         
 
         //links zwischen datenpunkten
@@ -50,10 +57,22 @@ drawgraph = (data)=>{
         .selectAll("path")
         .data(root.links())
         .join("path")
-            .attr("d", d3.linkRadial()
-                .angle(d => d.x)
-                .radius(d => scale_radius(d))
-            )
+            .attr("d", d=>{
+                switch (options.form) {
+                    case "circle":
+                        return d3.linkRadial()
+                        .angle(d => d.x)
+                        .radius(d => scale_radius(d))(d)
+
+                    case "rectangle":
+                        return  d3.linkVertical()
+                        .y(d => d.x*100)
+                        .x(d => scale_radius(d))(d)
+                    default:
+                        break;
+                }
+               
+            })
         
         // knotenpunkte selbst
         console.log(svg.append("g")
