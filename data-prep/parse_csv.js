@@ -12,7 +12,7 @@ async function prepareData(){
             year: d.year_remake,
 
             id_orig: d.director_original,
-            id_fake: d.director_remake,
+            id: d.director_remake
         };
     });
     /*
@@ -28,16 +28,14 @@ async function prepareData(){
     */
     grouped  = d3.group(edges, d => d.t_orig)
     data = d3.hierarchy(grouped)
-      .sort((a, b) => d3.ascending(a.data.d_orig, b.data.d_orig))
       .each(d => {
         if (d.depth ==1 ){
           d.data.title = d.data[0]
           d.data.director = d.children[0].data.d_orig
           d.data.year = d.children[0].data.y_orig
+          d.data.id = d.children[0].data.id_orig
         }
       })
-      
-    console.log(data)
     return data
 }
 
