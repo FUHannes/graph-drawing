@@ -25,8 +25,7 @@ drawgraph = (data)=>{
     
 //Zeitskala 1918-1980 remakes 1927-2018
 
-        function scale_radius(d){
-            return 300 *(parseInt(d.data.year)-1918)/100 +200
+        function scale_radius(d){            return 300 *(parseInt(d.data.year)-1918)/100 +200
         }
 
         //links zwischen datenpunkten
