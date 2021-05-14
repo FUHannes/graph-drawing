@@ -9,7 +9,10 @@ async function prepareData(){
             y_orig: d.year_original,
             director: directors[d.director_remake-1].name,
             title: d.title_remake,
-            year: d.year_remake
+            year: d.year_remake,
+
+            id_orig: d.director_original,
+            id_fake: d.director_remake,
         };
     });
     /*
