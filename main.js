@@ -116,10 +116,46 @@ drawgraph = (data)=>{
         .join("circle")
             .attr("transform", transform)
             .attr("fill", color)
-            .attr("opacity", d => d.children ? ".5" : "1")
+            .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
             .attr("isKnot", true))
     
+
+        // zentrumslegende
+        var author = svg.append('text')
+            .style("visibility", "hidden")
+            .style("background", "none")
+            .attr("x", -20)
+            .attr("y", 0)   
+            .text("a simple author");
+            
+        var year = svg.append('text')
+            .attr("x", -20)
+            .attr("y", 20)
+            .attr("text-align", "center")            
+            .style("visibility", "hidden")
+            .style("background", "none")
+            .text("a simple author");
+
+        const mouseover_h = function (e, d) {
+            author.text(d.data.director);
+            year.text(d.data.year);
+            author.style("visibility", "visible");
+            year.style("visibility", "visible");
+        }
+        const mousemove_h =  function(e, d){
+            author.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+            year.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+        }
+        const mouseout_h = function (e, d) {
+            author.style("visibility", "hidden");
+            year.style("visibility", "hidden");
+        }
+
+        
         //beschriftung
+
+        const circlehalfchildren = d => (!(options.form == "circle") || d.x < Math.PI) === !d.children
+
         svg.append("g")
             .attr("isTitles", true)
         .selectAll("text")
@@ -128,21 +164,26 @@ drawgraph = (data)=>{
             .attr("transform", d => transform(d)+ (options.form == "circle" ? `
             rotate(${d.x >= Math.PI ? 180 : 0})
             `: ``))
-            .attr("dy", "0.31em")
-            .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
-            .attr("text-anchor", d => (!(options.form == "circle") || d.x < Math.PI) === !d.children ? "start" : "end")
+            .on('mouseover', mouseover_h)
+            .on("mousemove", mousemove_h)
+            .on('mouseout', mouseout_h)
+            .attr("dy", options.form == "circle" ? "0.31em" : 0)
+            .attr("x", d => circlehalfchildren(d) ? 6 : -6)
+            .attr("y", d => options.form != "circle" ? 3 : 0)
+            .attr("text-anchor", d => circlehalfchildren(d) ? "start" : "end")
             .text(d =>  d.data.title )
             .attr("fill",color)
             .attr("fill","black")
             .attr('visibility', options.show_titles ? 'visible' : 'hidden')
             .clone(true).lower()
             .attr("stroke", "white");
-            
-    
-        
+
+
         return svg.attr("viewBox", autoBox).node();
+
     }
 
     d3.select("body").append(mainchart)
     
+
 }
