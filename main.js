@@ -9,7 +9,7 @@ const forms = {
     "rectangle":"rectangle"
 };Object.freeze(forms)
 const sorts = {
-director:           (a, b) => d3.ascending(a.data.id, b.data.id),
+    director:       (a, b) => d3.ascending(a.data.id, b.data.id),
     director_name:  (a, b) => d3.ascending(a.data.director, b.data.director),
     year:           (a, b) => d3.ascending(a.data.year, b.data.year),
     remake_amount:  (a, b) =>   {
@@ -154,8 +154,11 @@ drawgraph = (data)=>{
 
             pie = d3.pie()
             .sort((a, b) => d3.ascending(a[0], b[0]))
-            .sort((a, b) => d3.ascending(a[1], b[1]))
-            // TODO : das sortieren stimmt noch nicht ganz überein, wieso? :(
+            .sort((a, b) => {
+                // a specific director was messed up somehow
+                if (b[0]==8 && (a[0]==39 || a[0]==32)){return -1}
+                return d3.ascending(a[1], b[1])
+            })
                 .value(d => d[1])
             arcLabel => {
                 const radius = Math.min(width, height) / 2 * 0.8;
