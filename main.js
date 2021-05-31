@@ -194,6 +194,7 @@ drawgraph = (data)=>{
         const updatecake = function () {
             var cake = svg.select("#cake").selectAll("path")
             cake.transition()
+            .duration(hovered_dude == -1 ? 1000 : 10)
             .attr("fill", d => {
                 if (hovered_dude == -1 || hovered_dude==d.data[0]) {
                     return color({data:{id:parseInt(d.data[0])}})
