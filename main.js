@@ -1,13 +1,13 @@
-// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay
+// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay (animieren) und ausgewähltes kuchestück hervorheben
 // TODO : split into multiple files
 // TODO : Zeit an achse
 // TODO : Zeitlinien im rectangle
-// TODO : warum colorcut zwischen alfred und dem 2t meissten
 
 const forms = {
     "circle":"circle", 
     "rectangle":"rectangle"
 };Object.freeze(forms)
+
 const sorts = {
     director:       (a, b) => d3.ascending(a.data.id, b.data.id),
     director_name:  (a, b) => d3.ascending(a.data.director, b.data.director),
@@ -77,8 +77,8 @@ drawgraph = (data)=>{
         function scale_radius(d){
             return scale_year(d.data.year)
         }
-
-        const color = (d)=>`hsl(${d.data.id/91*360},100%,50%)`
+        // TODO : remove || 0 to make fakers black (einmal cooles feature draus bauen)
+        const color = (d)=>`hsl(${((anzahl_filme_pro_director[d.data.id]|| 0)+[d.data.id])*10},100%,50%)`
 
         //nur in rectangle form
         const scale_x = d => d.x*200
@@ -156,6 +156,7 @@ drawgraph = (data)=>{
             .sort((a, b) => d3.ascending(a[0], b[0]))
             .sort((a, b) => {
                 // a specific director was messed up somehow
+                // TODO : some directors are not aligned ..
                 if (b[0]==8 && (a[0]==39 || a[0]==32)){return -1}
                 return d3.ascending(a[1], b[1])
             })
@@ -174,15 +175,31 @@ drawgraph = (data)=>{
             .outerRadius(100)
 
             svg.append("g")
+            .attr("id", "cake")
             .attr("stroke", "white")
             .selectAll("path")
             .data(arcs)
             .join("path")
-            .attr("fill", d => color({data:{id:parseInt(d.data[0])}}))
+            .attr("fill", d => {
+                if (hovered_dude == -1 || hovered_dude==d.data[0]) {
+                    return color({data:{id:parseInt(d.data[0])}})
+                }
+                return 'black'
+            })
             .attr("d", arc)
             .append("title")
             .text(d => `${d[0]}`);
       
+        }
+        const updatecake = function () {
+            var cake = svg.select("#cake").selectAll("path")
+            cake.transition()
+            .attr("fill", d => {
+                if (hovered_dude == -1 || hovered_dude==d.data[0]) {
+                    return color({data:{id:parseInt(d.data[0])}})
+                }
+                return 'white'
+            })
         }
 
         // zentrumslegende
@@ -206,6 +223,8 @@ drawgraph = (data)=>{
             year.text(d.data.year);
             author.style("visibility", "visible");
             year.style("visibility", "visible");
+            hovered_dude = d.data.id;
+           updatecake()
         }
         const mousemove_h =  function(e, d){
             // TODO macht das was?
@@ -216,6 +235,8 @@ drawgraph = (data)=>{
         const mouseout_h = function (e, d) {
             author.style("visibility", "hidden");
             year.style("visibility", "hidden");
+            hovered_dude = -1;
+            updatecake()
         }
 
         
@@ -254,3 +275,6 @@ drawgraph = (data)=>{
     
 
 }
+
+
+var hovered_dude = -1

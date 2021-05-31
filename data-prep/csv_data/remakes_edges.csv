@@ -6,7 +6,7 @@ director_original,director_remake,title_original,year_original,title_remake,year
 37,30,Little Mother,1935,Bachelor Mother,1939
 47,17,Back Street,1932,Back Street,1961
 38,89,Beau Geste,1926,Beau Geste,1939
-61,37,A Precocious Girl,1934,Between Us Girls,1942
+61,37,A Precocious Girl,1934,Between Us Girls,1942 ----------------------------------------- TODO: gleicher film aber 2 orig oirectors
 70,37,A Precocious Girl,1934,Between Us Girls,1942
 52,17,Billy the Kid,1930,Billy the Kid,1941
 60,32,The Blue Bird,1918,The Blue Bird,1976
@@ -17,10 +17,8 @@ director_original,director_remake,title_original,year_original,title_remake,year
 10,16,Carrie,1976,Carrie,2002
 74,67,The Computer Wore Tennis Shoes,1969,The Computer Wore Tennis Shoes,1995
 23,74,Dark Victory,1939,Dark Victory,1976
-23,15,Dark Victory,1939,Stolen Hours,1963
 39,23,The Dawn Patrol,1930,The Dawn Patrol,1938
 45,79,The Fog,1980,The Fog,2005
-56,8,The Front Page,1931,The Front Page,1974
 84,19,Fun with Dick and Jane,1977,Fun with Dick and Jane,2005
 49,80,The Gambler,1974,The Gambler,2014
 85,32,Gaslight,1940,Gaslight,1944
@@ -47,7 +45,7 @@ director_original,director_remake,title_original,year_original,title_remake,year
 30,32,My Favorite Wife,1940,Something's Got to Give,1962
 59,90,Mr. Wu,1919,Mr. Wu,1927
 34,37,My Man Godfrey,1936,My Man Godfrey,1957
-5,32,Pygmalion,1938,My Fair Lady,1964
+5,32,Pygmalion,1938,My Fair Lady,1964 ----------------------------------------------------- TODO: gleicher film aber 2 orig oirectors
 55,32,Pygmalion,1938,My Fair Lady,1964
 72,49,Night Must Fall,1937,Night Must Fall,1964
 2,14,Notorious,1946,Notorious,1992
@@ -55,13 +53,12 @@ director_original,director_remake,title_original,year_original,title_remake,year
 37,28,It Started with Eve,1941,Oh Jonathan – oh Jonathan!,1973
 56,31,Of Mice and Men,1939,Of Mice and Men,1992
 32,17,The Women,1939,The Opposite Sex,1956
+32,21,The Women,1939,The Women,2008
 48,71,Holiday for Henrietta,1952,"Paris, When It Sizzles",1964
 2,3,Dial M for Murder,1954,A Perfect Murder,1998
 37,66,The Bishop's Wife,1947,The Preacher's Wife,1996
-46,71,The Prisoner of Zenda,1937,The Prisoner of Zenda,1979
-87,71,The Prisoner of Zenda,1937,The Prisoner of Zenda,1979
-46,72,The Prisoner of Zenda,1937,The Prisoner of Zenda,1952
-87,72,The Prisoner of Zenda,1937,The Prisoner of Zenda,1952
+92,71,The Prisoner of Zenda,1937,The Prisoner of Zenda,1979
+92,72,The Prisoner of Zenda,1937,The Prisoner of Zenda,1952
 2,35,Psycho,1960,Psycho,1998
 56,46,The Racket,1928,The Racket,1951
 2,43,Rear Window,1954,Rear Window,1998
@@ -74,7 +71,6 @@ director_original,director_remake,title_original,year_original,title_remake,year
 2,50,Shadow of a Doubt,1943,Shadow of a Doubt,1991
 2,54,Shadow of a Doubt,1943,Strange Homecoming,1974
 7,81,Solaris,1968,Solaris,2002
-30,32,My Favorite Wife,1940,Something's Got to Give,1962
 39,39,Ball of Fire,1941,A Song Is Born,1948
 36,37,Spring Parade,1934,Spring Parade,1940
 32,9,What Price Hollywood?,1932,A Star Is Born,2018
@@ -88,7 +84,7 @@ director_original,director_remake,title_original,year_original,title_remake,year
 56,8,The Front Page,1931,The Front Page,1974
 56,39,The Front Page,1931,His Girl Friday,1940
 11,56,In the Wake of the Bounty,1933,Mutiny on the Bounty,1962
-13,45,The Thing from Another World,1951,The Thing,1982
+13,45,The Thing from Another World,1951,The Thing,1982 -------------------------------------- TODO: gleicher film aber 2 orig oirectors
 39,45,The Thing from Another World,1951,The Thing,1982
 2,41,The 39 Steps,1935,The 39 Steps,2008
 2,22,The 39 Steps,1935,The Thirty Nine Steps,1978
@@ -97,7 +93,5 @@ director_original,director_remake,title_original,year_original,title_remake,year
 75,81,Criss Cross,1949,The Underneath,1995
 91,45,Village of the Damned,1960,Village of the Damned,1995
 33,12,The More the Merrier,1943,Walk Don't Run,1966
-32,21,The Women,1939,The Women,2008
-32,17,The Women,1939,The Opposite Sex,1956
 8,63,The Major and the Minor,1942,You're Never Too Young,1955
 26,62,The Shop Around the Corner,1940,Pillow Talk,1959
