@@ -27,9 +27,9 @@ const sorts = {
 options = {
     show_titles: true,
     show_timescale: true,
-    show_pie: true,
+    show_pie: false ,//||true ,
     form:   forms.circle, //&& forms.rectangle,
-    sort:   sorts.year //.director_movie_amount
+    sort:   sorts.director_movie_amount
 }
 
 prepareData().then(data =>{
@@ -40,11 +40,10 @@ prepareData().then(data =>{
     data.each(d => {
         d.data.director_origs_amount = anzahl_filme_pro_director[d.data.id]
     })
-    drawgraph(
-        data
-        .sort(sorts.director)
-        .sort(options.sort) 
-    )
+    data=data
+    .sort(sorts.director)
+    .sort(options.sort) 
+    drawgraph(data)
 }
 )
 
@@ -272,10 +271,31 @@ drawgraph = (data)=>{
 
     }
 
-    d3.select("body").append(mainchart)
+    d3.select("#graph").append(mainchart)
     
 
 }
 
 
 var hovered_dude = -1
+
+
+
+//super dirty state update
+function update() {
+    d3.selectAll("#graph").selectChildren().remove()
+    drawgraph(data);
+    console.log('updated')
+}
+
+function toggleForm() {
+    options.form = (options.form==forms.rectangle)?forms.circle:forms.rectangle;update()
+}
+
+function toggleSort(newSort) {
+    console.log(newSort, sorts[newSort])
+    options.sort = sorts[newSort]
+    data=data
+    .sort(options.sort) 
+    update()
+}

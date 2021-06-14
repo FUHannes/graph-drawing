@@ -32,3 +32,46 @@ body {
     stroke-opacity: 0.4;
     stroke-width: 1.5;
 }
+
+
+#wrapper {
+    /*display: flex;
+    TODO : y did this not work?
+    */
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+#graph {
+    align-self: stretch;
+}
+#toggles {
+}
+
+
+html {
+    font-family: sans-serif;
+  }
+  
+  form {
+    margin: 0 auto;
+  }
+  
+  div {
+    margin-bottom: 10px;
+  }
+  
+  fieldset {
+    background: white;
+    border-radius: .5em;
+    border: 2px solid gray;
+  }
+  
+  legend {
+    padding: 10px;
+    background: gray;
+    color: white;
+    border-radius: .4em;
+  }
+  Copy to Clipboard
+  
