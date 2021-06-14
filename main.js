@@ -1,28 +1,51 @@
-// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay
+// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay (animieren) und ausgewähltes kuchestück hervorheben
 // TODO : split into multiple files
 // TODO : Zeit an achse
 // TODO : Zeitlinien im rectangle
-// TODO : warum colorcut zwischen alfred und dem 2t meissten
 
+const forms = {
+    "circle":"circle", 
+    "rectangle":"rectangle"
+};Object.freeze(forms)
 
+const sorts = {
+    director:       (a, b) => d3.ascending(a.data.id, b.data.id),
+    director_name:  (a, b) => d3.ascending(a.data.director, b.data.director),
+    year:           (a, b) => d3.ascending(a.data.year, b.data.year),
+    remake_amount:  (a, b) =>   {
+        if (a.depth==1 && b.depth==1){
+            return d3.ascending(a.children.length, b.children.length)
+        }else{
+            return 0
+        }
+        
+    },
+    director_movie_amount: (a, b) =>  d3.ascending(a.data.director_origs_amount, b.data.director_origs_amount),
+}
+
+// darstellungsoptionen hier eingeben
 options = {
     show_titles: true,
     show_timescale: true,
-    form:   //'rectangle'||
-            'circle',
-    sort:   'director'||
-            'year',
+    show_pie: true,
+    form:   forms.circle, //&& forms.rectangle,
+    sort:   sorts.year //.director_movie_amount
 }
 
-const sorts = {
-    director:   (a, b) => d3.ascending(a.data.id, b.data.id),
-    year:       (a, b) => d3.ascending(a.data.year, b.data.year)
-}
-prepareData().then(data =>
+prepareData().then(data =>{
+    anzahl_filme_pro_director = {}
+    data.each(d => {if (d.depth == 1 ){
+        anzahl_filme_pro_director[d.data.id] = (anzahl_filme_pro_director[d.data.id] || 0)+1
+    }})
+    data.each(d => {
+        d.data.director_origs_amount = anzahl_filme_pro_director[d.data.id]
+    })
     drawgraph(
         data
-        .sort(sorts[options.sort]) 
+        .sort(sorts.director)
+        .sort(options.sort) 
     )
+}
 )
 
 
@@ -54,8 +77,8 @@ drawgraph = (data)=>{
         function scale_radius(d){
             return scale_year(d.data.year)
         }
-
-        const color = (d)=>`hsl(${d.data.id/91*360},100%,50%)`
+        // TODO : remove || 0 to make fakers black (einmal cooles feature draus bauen)
+        const color = (d)=>`hsl(${((anzahl_filme_pro_director[d.data.id]|| 0)+[d.data.id])*10},100%,50%)`
 
         //nur in rectangle form
         const scale_x = d => d.x*200
@@ -76,7 +99,7 @@ drawgraph = (data)=>{
         //jahrzenteringe
         if (options.show_timescale){
             switch (options.form) {
-                case `circle`:
+                case forms.circle:
                     for(jahrzent=2;jahrzent<11;jahrzent++){
                         svg.append('circle')
                         .attr('r', scale_year(1900+jahrzent*10))
@@ -100,12 +123,12 @@ drawgraph = (data)=>{
             // TODO : Links farbig machen? mit gradient
             .attr("d", d=>{
                 switch (options.form) {
-                    case "circle":
+                    case forms.circle:
                         return d3.linkRadial()
                         .angle(d => d.x)
                         .radius(d => scale_radius(d))(d)
 
-                    case "rectangle":
+                    case forms.rectangle:
                         return  d3.linkVertical()
                         .y(scale_x)
                         .x(d => scale_radius(d))(d)
@@ -116,15 +139,69 @@ drawgraph = (data)=>{
             })
         
         // knotenpunkte selbst
-        console.log(svg.append("g")
+        svg.append("g")
         .selectAll("circle") //was macht das?
         .data(root.descendants())
         .join("circle")
             .attr("transform", transform)
             .attr("fill", color)
             .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
-            .attr("isKnot", true))
+            .attr("isKnot", true)
     
+
+        // kuchenzentrum
+        if (options.form == forms.circle && options.show_pie){
+
+            pie = d3.pie()
+            .sort((a, b) => d3.ascending(a[0], b[0]))
+            .sort((a, b) => {
+                // a specific director was messed up somehow
+                // TODO : some directors are not aligned ..
+                if (b[0]==8 && (a[0]==39 || a[0]==32)){return -1}
+                return d3.ascending(a[1], b[1])
+            })
+                .value(d => d[1])
+            arcLabel => {
+                const radius = Math.min(width, height) / 2 * 0.8;
+                return d3.arc().innerRadius(radius).outerRadius(radius);
+            }
+
+            pie_data = Object.entries(anzahl_filme_pro_director)
+
+            arcs = pie(pie_data)
+            
+            arc = d3.arc()
+            .innerRadius(50)
+            .outerRadius(100)
+
+            svg.append("g")
+            .attr("id", "cake")
+            .attr("stroke", "white")
+            .selectAll("path")
+            .data(arcs)
+            .join("path")
+            .attr("fill", d => {
+                if (hovered_dude == -1 || hovered_dude==d.data[0]) {
+                    return color({data:{id:parseInt(d.data[0])}})
+                }
+                return 'black'
+            })
+            .attr("d", arc)
+            .append("title")
+            .text(d => `${d[0]}`);
+      
+        }
+        const updatecake = function () {
+            var cake = svg.select("#cake").selectAll("path")
+            cake.transition()
+            .duration(hovered_dude == -1 ? 1000 : 10)
+            .attr("fill", d => {
+                if (hovered_dude == -1 || hovered_dude==d.data[0]) {
+                    return color({data:{id:parseInt(d.data[0])}})
+                }
+                return 'white'
+            })
+        }
 
         // zentrumslegende
         var author = svg.append('text')
@@ -147,14 +224,20 @@ drawgraph = (data)=>{
             year.text(d.data.year);
             author.style("visibility", "visible");
             year.style("visibility", "visible");
+            hovered_dude = d.data.id;
+           updatecake()
         }
         const mousemove_h =  function(e, d){
-            author.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
-            year.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+            // TODO macht das was?
+            // assignees: berthob98
+            //author.style("top", (e.pageY-10)+"px").style("left",(e.pageX+10)+"px");
+            //year.style("top", (e.pageY-10)+"px").style("left",(e.pageX+10)+"px");
         }
         const mouseout_h = function (e, d) {
             author.style("visibility", "hidden");
             year.style("visibility", "hidden");
+            hovered_dude = -1;
+            updatecake()
         }
 
         
@@ -193,3 +276,6 @@ drawgraph = (data)=>{
     
 
 }
+
+
+var hovered_dude = -1
