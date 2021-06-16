@@ -44,8 +44,7 @@ prepareData().then(data =>{
     .sort(sorts.director)
     .sort(options.sort) 
     drawgraph(data)
-}
-)
+})
 
 
 drawgraph = (data)=>{
