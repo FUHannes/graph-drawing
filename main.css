@@ -1,5 +1,6 @@
 body {
     font-family: sans-serif;
+    --thiccness: 5;
 }
 
 [isRing="true"]{
@@ -11,7 +12,7 @@ body {
 }
 
 [isKnot="true"]{
-    r:5;
+    r:var(--thiccness);
 }
 
 [isTitles="true"]>text{
@@ -30,7 +31,7 @@ body {
     fill: none;
     stroke: #555;
     stroke-opacity: 0.4;
-    stroke-width: 1.5;
+    stroke-width: calc(var(--thiccness)*2);
 }
 
 

@@ -3,6 +3,7 @@
 // TODO : Zeit an achse
 // TODO : Zeitlinien im rectangle
 
+
 const forms = {
     "circle":"circle", 
     "rectangle":"rectangle"
@@ -116,9 +117,15 @@ drawgraph = (data)=>{
             .attr("isLink", true)
         .selectAll("path")
         .data(root.links())
+        // TODO : if we dont want errors this should not forward links starting at root
         .join("path")
 
-            // TODO : Links farbig machen? mit gradient
+            /*// TODO : Links farbig machen? mit gradient
+            * das ist apparently garnicht so leich
+            * aber mit
+            * https://gist.github.com/mbostock/4163057
+            * sollete es gehen */
+           
             .attr("d", d=>{
                 switch (options.form) {
                     case forms.circle:
@@ -135,6 +142,7 @@ drawgraph = (data)=>{
                 }
                
             })
+            
         
         // knotenpunkte selbst
         svg.append("g")
