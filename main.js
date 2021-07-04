@@ -83,7 +83,7 @@ drawgraph = (data)=>{
         
         const transform = d => {return{
             circle:`
-                rotate(${d.x * 180 / Math.PI - 90})
+                rotate(${d.x * 180 / Math.PI - 80})
                 translate(${scale_radius(d)},0)
                 `,
 
@@ -118,7 +118,7 @@ drawgraph = (data)=>{
                             .append('textPath')
                             .attr('xlink:href', '#ring' + decade)
                             .style('text-anchor','middle')
-                            .attr('startOffset', '24%')
+                            .attr('startOffset', '25%')
                             .text(decade + 's');
                     }
                     break;
@@ -141,7 +141,7 @@ drawgraph = (data)=>{
                 switch (options.form) {
                     case forms.circle:
                         return d3.linkRadial()
-                        .angle(d => d.x)
+                        .angle(d => d.x + 10 * (Math.PI / 180))
                         .radius(d => scale_radius(d))(d)
 
                     case forms.rectangle:
@@ -282,7 +282,6 @@ drawgraph = (data)=>{
             .attr('visibility', options.show_titles ? 'visible' : 'hidden')
             .clone(true).lower()
             .attr("stroke", "white");
-
 
         return svg.attr("viewBox", autoBox).node();
 
