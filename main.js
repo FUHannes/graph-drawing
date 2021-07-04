@@ -153,7 +153,15 @@ drawgraph = (data)=>{
                 }
                
             })
-        
+        svg.append("g")
+            .attr("class", "tooltip-info")
+            .style("opacity", 1)
+            .html("<p>some text</p>");
+
+        var div = d3.select("body").append("div")	
+            .attr("class", "tooltip")				
+            .style("opacity", 0);
+
         // knotenpunkte selbst
         svg.append("g")
         .selectAll("circle") //was macht das?
@@ -163,6 +171,33 @@ drawgraph = (data)=>{
             .attr("fill", color)
             .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
             .attr("isKnot", true)
+            .on('mouseover', function (event, d) {
+                div.transition()
+                    .duration(200)
+                    .style('opacity', 1);
+                div.html(`
+                    <div class=tooltip-container>
+                        <div class=tooltip-left>
+                            <img src=testimage.jpg alt=Poster class=movie-poster>
+                        </div>
+                        <div class=tooltip-right>
+                            <div class=title>
+                                <h1>${d.data.title}</h1>
+                            </div>
+                            <p>Directed by: ${d.data.director}</p>
+                            <p>Produced by: iono</p>
+                            <p>Released in: ${d.data.year}</p>
+                        </div>
+                    </div>`
+                )
+                    .style('left', (event.pageX) + 'px')
+                    .style('top', (event.pageY - 28) + 'px');
+            })
+            .on('mouseout', function (event, d) {
+                div.transition()
+                    .duration(500)
+                    .style('opacity', 0);
+            });
     
 
         // kuchenzentrum
@@ -255,7 +290,6 @@ drawgraph = (data)=>{
             hovered_dude = -1;
             updatecake()
         }
-
         
         //beschriftung
 
