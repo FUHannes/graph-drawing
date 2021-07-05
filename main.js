@@ -53,7 +53,7 @@ drawgraph = (data)=>{
     radius = width / 2
 
     tree = d3.tree()
-        .size([2 * Math.PI, radius])
+        .size([1.9 * Math.PI, radius])
         .separation((a, b) => (a.parent == b.parent ? 1 : 1) / a.depth)
 
     function autoBox() {
@@ -84,7 +84,7 @@ drawgraph = (data)=>{
         
         const transform = d => {return{
             circle:`
-                rotate(${d.x * 180 / Math.PI - 90})
+                rotate(${d.x * 180 / Math.PI - 80})
                 translate(${scale_radius(d)},0)
                 `,
 
@@ -99,10 +99,28 @@ drawgraph = (data)=>{
         if (options.show_timescale){
             switch (options.form) {
                 case forms.circle:
-                    for(jahrzent=2;jahrzent<11;jahrzent++){
-                        svg.append('circle')
-                        .attr('r', scale_year(1900+jahrzent*10))
-                        .attr('isRing', true)
+                    for (decade = 1920; decade < 2010; decade += 10) {
+                        // Use arc instead of circle because it is simpler to
+                        // get text to go along the path.
+                        svg.append('path')
+                            .attr('id', 'ring' + decade)
+                            .attr('d', d3.arc()
+                                .innerRadius(scale_year(decade))
+                                .outerRadius(scale_year(decade))
+                                // Move start angle away from 0 so that it
+                                // doesn't wrap the text.
+                                .startAngle(Math.PI)
+                                .endAngle(3 * Math.PI)
+                            )
+                            .attr('isRing', true);
+
+                        svg.append('text')
+                            .attr('dy', '-5')
+                            .append('textPath')
+                            .attr('xlink:href', '#ring' + decade)
+                            .style('text-anchor','middle')
+                            .attr('startOffset', '25%')
+                            .text(decade + 's');
                     }
                     break;
             
@@ -130,7 +148,7 @@ drawgraph = (data)=>{
                 switch (options.form) {
                     case forms.circle:
                         return d3.linkRadial()
-                        .angle(d => d.x)
+                        .angle(d => d.x + 10 * (Math.PI / 180))
                         .radius(d => scale_radius(d))(d)
 
                     case forms.rectangle:
@@ -272,7 +290,6 @@ drawgraph = (data)=>{
             .attr('visibility', options.show_titles ? 'visible' : 'hidden')
             .clone(true).lower()
             .attr("stroke", "white");
-
 
         return svg.attr("viewBox", autoBox).node();
 

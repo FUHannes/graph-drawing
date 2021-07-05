@@ -4,8 +4,6 @@ body {
 }
 
 [isRing="true"]{
-    cx:0;
-    cy: 0;
     stroke: #111;
     opacity: .1;
     fill: None;
