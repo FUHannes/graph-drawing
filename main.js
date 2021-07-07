@@ -178,7 +178,7 @@ drawgraph = (data)=>{
                 div.html(`
                     <div class=tooltip-container>
                         <div class=tooltip-left>
-                            <img src=testimage.jpg alt=Poster class=movie-poster>
+                            <img src=posters/CARRIE_2002.jpg alt=Poster class=movie-poster>
                         </div>
                         <div class=tooltip-right>
                             <div class=title>
