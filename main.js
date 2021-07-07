@@ -160,10 +160,6 @@ drawgraph = (data)=>{
                 }
                
             })
-        svg.append("g")
-            .attr("class", "tooltip-info")
-            .style("opacity", 1)
-            .html("<p>some text</p>");
 
         var div = d3.select("body").append("div")	
             .attr("class", "tooltip")				
