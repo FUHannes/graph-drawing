@@ -15,6 +15,17 @@ async function prepareData(){
             id: d.director_remake
         };
     });
+    movie_info = await loadCSV("data-prep/csv_data/movie-data.csv", (d) => {
+        return {
+            title: d.title,
+            year: d.year,
+            director: d.directed_by,
+            producer: d.produced_by,
+            language: d.language,
+            starring: d.starring,
+            running_time: d.running_time
+        }
+    });
     /*
     stratify = d3.stratify()
       .id(d => d.title)
