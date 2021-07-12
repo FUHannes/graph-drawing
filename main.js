@@ -33,22 +33,27 @@ options = {
     sort:   sorts.director_movie_amount
 }
 
-prepareData().then(data =>{
+async function main() {
+    const data = await prepareData();
+    const movie_data = data.data;
+    const allMovieInfo = data.info;
     anzahl_filme_pro_director = {}
-    data.each(d => {if (d.depth == 1 ){
+    movie_data.each(d => {if (d.depth == 1 ){
         anzahl_filme_pro_director[d.data.id] = (anzahl_filme_pro_director[d.data.id] || 0)+1
     }})
-    data.each(d => {
+    movie_data.each(d => {
         d.data.director_origs_amount = anzahl_filme_pro_director[d.data.id]
     })
-    data=data
-    .sort(sorts.director)
-    .sort(options.sort) 
-    drawgraph(data)
-})
+    sorted_movie_data = movie_data
+        .sort(sorts.director)
+        .sort(options.sort);
+    drawgraph(sorted_movie_data, allMovieInfo);
+}
+
+main();
 
 
-drawgraph = (data)=>{
+drawgraph = (data, allMovieInfo) => {
     width = 954
     radius = width / 2
 

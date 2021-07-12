@@ -46,8 +46,8 @@ async function prepareData(){
           d.data.year = d.children[0].data.y_orig
           d.data.id = d.children[0].data.id_orig
         }
-      })
-    return data
+      });
+    return { data: data, info: movie_info };
 }
 
 function loadCSV(filename,callback){
