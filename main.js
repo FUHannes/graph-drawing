@@ -180,21 +180,26 @@ drawgraph = (data, allMovieInfo) => {
             .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
             .attr("isKnot", true)
             .on('mouseover', function (event, d) {
+                const filename = convertToPosterFilename(d.data.title, d.data.year);
+                const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 div.transition()
                     .duration(200)
                     .style('opacity', 1);
                 div.html(`
                     <div class=tooltip-container>
                         <div class=tooltip-left>
-                            <img src=posters/CARRIE_2002.jpg alt=Poster class=movie-poster>
+                            <img src=posters/${filename}.jpg alt=Poster class=movie-poster>
                         </div>
                         <div class=tooltip-right>
                             <div class=title>
                                 <h1>${d.data.title}</h1>
                             </div>
                             <p>Directed by: ${d.data.director}</p>
-                            <p>Produced by: iono</p>
+                            <p>Produced by: ${movieInfo.producer}</p>
                             <p>Released in: ${d.data.year}</p>
+                            <p>Language: ${movieInfo.language}</p>
+                            <p>Starring: ${movieInfo.starring}</p>
+                            <p>Running time: ${movieInfo.running_time} min.</p>
                         </div>
                     </div>`
                 )
@@ -338,6 +343,28 @@ drawgraph = (data, allMovieInfo) => {
 var hovered_dude = -1
 
 
+function convertToPosterFilename(title, year) {
+    title = title.toLowerCase().replaceAll(' ', '_').concat('_', year);
+    return title;
+}
+
+function getMovieInfo(title, year, allMovieInfo) {
+    for (const movieInfo of allMovieInfo) {
+        if (movieInfo.title === title && movieInfo.year === year) {
+            return formatMovieInfo(movieInfo);
+        }
+    }
+}
+
+function formatMovieInfo(movieInfo) {
+    console.log(JSON.stringify(movieInfo))
+    for (const key of Object.keys(movieInfo)) {
+        if (typeof(movieInfo[key]) === "string") {
+            movieInfo[key] = movieInfo[key].replaceAll(";", ", ");
+        }
+    }
+    return movieInfo;
+}
 
 //super dirty state update
 function update() {
