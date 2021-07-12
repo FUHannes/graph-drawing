@@ -75,10 +75,11 @@ html {
   }
   
 div.tooltip {
+    display: inline-block;
     position: absolute;			
     text-align: center;			
-    width: 440px;					
-    height: 440px;					
+    max-width: 440px;
+    max-height: 440px;
     padding: 2px;				
     font: 12px sans-serif;		
     background: lightsteelblue;	
