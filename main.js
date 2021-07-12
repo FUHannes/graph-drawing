@@ -194,12 +194,12 @@ drawgraph = (data, allMovieInfo) => {
                             <div class=title>
                                 <h1>${d.data.title}</h1>
                             </div>
-                            <p>Directed by: ${d.data.director}</p>
-                            <p>Produced by: ${movieInfo.producer}</p>
-                            <p>Released in: ${d.data.year}</p>
-                            <p>Language: ${movieInfo.language}</p>
-                            <p>Starring: ${movieInfo.starring}</p>
-                            <p>Running time: ${movieInfo.running_time} min.</p>
+                            <p><b>Directed by:</b> ${d.data.director}</p>
+                            <p><b>Produced by:</b> ${movieInfo.producer}</p>
+                            <p><b>Released in:</b> ${d.data.year}</p>
+                            <p><b>Language:</b> ${movieInfo.language}</p>
+                            <p><b>Starring:</b> ${movieInfo.starring}</p>
+                            <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
                         </div>
                     </div>`
                 )
@@ -357,7 +357,6 @@ function getMovieInfo(title, year, allMovieInfo) {
 }
 
 function formatMovieInfo(movieInfo) {
-    console.log(JSON.stringify(movieInfo))
     for (const key of Object.keys(movieInfo)) {
         if (typeof(movieInfo[key]) === "string") {
             movieInfo[key] = movieInfo[key].replaceAll(";", ", ");
