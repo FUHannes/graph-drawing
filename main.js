@@ -267,39 +267,12 @@ drawgraph = (data, allMovieInfo) => {
             })
         }
 
-        // zentrumslegende
-        var author = svg.append('text')
-            .style("visibility", "hidden")
-            .style("background", "none")
-            .attr("x", -20)
-            .attr("y", 0)   
-            .text("a simple author");
-            
-        var year = svg.append('text')
-            .attr("x", -20)
-            .attr("y", 20)
-            .attr("text-align", "center")            
-            .style("visibility", "hidden")
-            .style("background", "none")
-            .text("a simple author");
-
         const mouseover_h = function (e, d) {
-            author.text(d.data.director);
-            year.text(d.data.year);
-            author.style("visibility", "visible");
-            year.style("visibility", "visible");
             hovered_dude = d.data.id;
-           updatecake()
+            updatecake()
         }
-        const mousemove_h =  function(e, d){
-            // TODO macht das was?
-            // assignees: berthob98
-            //author.style("top", (e.pageY-10)+"px").style("left",(e.pageX+10)+"px");
-            //year.style("top", (e.pageY-10)+"px").style("left",(e.pageX+10)+"px");
-        }
+
         const mouseout_h = function (e, d) {
-            author.style("visibility", "hidden");
-            year.style("visibility", "hidden");
             hovered_dude = -1;
             updatecake()
         }
@@ -317,7 +290,6 @@ drawgraph = (data, allMovieInfo) => {
             rotate(${d.x >= Math.PI ? 180 : 0})
             `: ``))
             .on('mouseover', mouseover_h)
-            .on("mousemove", mousemove_h)
             .on('mouseout', mouseout_h)
             .attr("dy", options.form == "circle" ? "0.31em" : 0)
             .attr("x", d => circlehalfchildren(d) ? 6 : -6)
