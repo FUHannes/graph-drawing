@@ -17,7 +17,7 @@ body {
     font-size: .6em;
     stroke-linejoin: round;
     stroke-width: 3;
-    opacity: 0.3;
+    opacity: 0.4;
 }
 [isTitles="true"]>text:hover{
     font-family: sans-serif;
