@@ -90,18 +90,15 @@ div.tooltip {
 
 div.tooltip-container {
   display: flex;
-  background-color: red;
   height: 100%;
 }
 
 div.tooltip-left {
-  background-color: green;
   flex: 1;
   padding: 1rem;
 }
 
 div.tooltip-right {
-  background-color: orange;
   flex: 1;
   padding: 1rem;
   text-align: left;
