@@ -115,10 +115,10 @@ drawgraph = (data)=>{
                             .attr('isRing', true);
 
                         svg.append('text')
+                            .attr('class', 'decade-labels')
                             .attr('dy', '-5')
                             .append('textPath')
                             .attr('xlink:href', '#ring' + decade)
-                            .style('text-anchor','middle')
                             .attr('startOffset', '25%')
                             .text(decade + 's');
                     }
