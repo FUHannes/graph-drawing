@@ -180,6 +180,12 @@ drawgraph = (data, allMovieInfo) => {
             .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
             .attr("isKnot", true)
             .on('mouseover', function (event, d) {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const tooltip = document.querySelector('.tooltip');
+                const tooltipStyle = window.getComputedStyle(tooltip, null);
+                const tooltipMaxWidth = parseInt(tooltipStyle.getPropertyValue('max-width'));
+                const tooltipMaxHeight = parseInt(tooltipStyle.getPropertyValue('max-height'));
                 const filename = convertToPosterFilename(d.data.title, d.data.year);
                 const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 div.transition()
@@ -203,8 +209,8 @@ drawgraph = (data, allMovieInfo) => {
                         </div>
                     </div>`
                 )
-                    .style('left', (event.pageX) + 'px')
-                    .style('top', (event.pageY - 28) + 'px');
+                    .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
+                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px');
             })
             .on('mouseout', function (event, d) {
                 div.transition()
