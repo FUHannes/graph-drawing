@@ -56,15 +56,16 @@ html {
     margin: 0 auto;
   }
   
-  div {
-    margin-bottom: 10px;
-  }
-  
   fieldset {
     font-size: small;
     background: white;
     border-radius: .5em;
     border: 2px solid gray;
+    margin-bottom: 10px;
+  }
+
+  fieldset div {
+    margin-bottom: 10px;
   }
   
   legend {
