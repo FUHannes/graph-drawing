@@ -193,6 +193,14 @@ drawgraph = (data, allMovieInfo) => {
                     .style('opacity', 1);
                 div.html(`
                     <div class=tooltip-container>
+                    </div>`
+                )
+                    .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
+                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px');
+                const poster = new Image();
+                poster.src = './posters/' + filename + '.jpg';
+                poster.onload = function() {
+                    document.querySelector('.tooltip-container').innerHTML = `
                         <div class=tooltip-left>
                             <img src=posters/${filename}.jpg alt=Poster class=movie-poster>
                         </div>
@@ -206,11 +214,22 @@ drawgraph = (data, allMovieInfo) => {
                             <p><b>Language:</b> ${movieInfo.language}</p>
                             <p><b>Starring:</b> ${movieInfo.starring}</p>
                             <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
-                        </div>
-                    </div>`
-                )
-                    .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
-                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px');
+                        </div>`
+                };
+                poster.onerror = function() {
+                    document.querySelector('.tooltip-container').innerHTML = ` 
+                        <div class=tooltip-right>
+                            <div class=title>
+                                <h1>${d.data.title}</h1>
+                            </div>
+                            <p><b>Directed by:</b> ${d.data.director}</p>
+                            <p><b>Produced by:</b> ${movieInfo.producer}</p>
+                            <p><b>Released in:</b> ${d.data.year}</p>
+                            <p><b>Language:</b> ${movieInfo.language}</p>
+                            <p><b>Starring:</b> ${movieInfo.starring}</p>
+                            <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
+                        </div>`
+                }
             })
             .on('mouseout', function (event, d) {
                 div.transition()
