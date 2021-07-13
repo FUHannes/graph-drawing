@@ -76,7 +76,6 @@ html {
   }
   
 div.tooltip {
-    display: inline-block;
     position: absolute;			
     text-align: center;			
     max-width: 440px;
@@ -96,6 +95,9 @@ div.tooltip-container {
 
 div.tooltip-left {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 1rem;
 }
 
