@@ -1,7 +1,8 @@
-// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay (animieren) und ausgewähltes kuchestück hervorheben
+// done : in der mitte farbiges kuchendiagramm und bei hover weisses overlay (animieren) und ausgewähltes kuchestück hervorheben
 // TODO : split into multiple files
-// TODO : Zeit an achse
+// done : Zeit an achse
 // TODO : Zeitlinien im rectangle
+// TODO : Settings nach unten und kleine an/ein leitung
 
 
 const forms = {
@@ -33,22 +34,27 @@ options = {
     sort:   sorts.director_movie_amount
 }
 
-prepareData().then(data =>{
+async function main() {
+    const data = await prepareData();
+    const movie_data = data.data;
+    const allMovieInfo = data.info;
     anzahl_filme_pro_director = {}
-    data.each(d => {if (d.depth == 1 ){
+    movie_data.each(d => {if (d.depth == 1 ){
         anzahl_filme_pro_director[d.data.id] = (anzahl_filme_pro_director[d.data.id] || 0)+1
     }})
-    data.each(d => {
+    movie_data.each(d => {
         d.data.director_origs_amount = anzahl_filme_pro_director[d.data.id]
     })
-    data=data
-    .sort(sorts.director)
-    .sort(options.sort) 
-    drawgraph(data)
-})
+    sorted_movie_data = movie_data
+        .sort(sorts.director)
+        .sort(options.sort);
+    drawgraph(sorted_movie_data, allMovieInfo);
+}
+
+main();
 
 
-drawgraph = (data)=>{
+drawgraph = (data, allMovieInfo) => {
     width = 954
     radius = width / 2
 
@@ -118,9 +124,11 @@ drawgraph = (data)=>{
                             .attr('dy', '-5')
                             .append('textPath')
                             .attr('xlink:href', '#ring' + decade)
+                            .attr('isYear', true)
                             .style('text-anchor','middle')
                             .attr('startOffset', '25%')
                             .text(decade + 's');
+                            // TODO : (optional) on hover ganzen ring vorheben und evtl sogar andere filme etwas ausblenden
                     }
                     break;
             
@@ -160,8 +168,11 @@ drawgraph = (data)=>{
                 }
                
             })
-            
-        
+
+        var div = d3.select("body").append("div")	
+            .attr("class", "tooltip")				
+            .style("opacity", 0);
+
         // knotenpunkte selbst
         svg.append("g")
         .selectAll("circle") //was macht das?
@@ -171,6 +182,63 @@ drawgraph = (data)=>{
             .attr("fill", color)
             .attr("opacity", d => d.parent ? (d => d.children ? ".5" : "1") : "0")
             .attr("isKnot", true)
+            .on('mouseover', function (event, d) {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const tooltip = document.querySelector('.tooltip');
+                const tooltipStyle = window.getComputedStyle(tooltip, null);
+                const tooltipMaxWidth = parseInt(tooltipStyle.getPropertyValue('max-width'));
+                const tooltipMaxHeight = parseInt(tooltipStyle.getPropertyValue('max-height'));
+                const filename = convertToPosterFilename(d.data.title, d.data.year);
+                const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
+                div.transition()
+                    .duration(200)
+                    .style('opacity', 1);
+                div.html(`
+                    <div class=tooltip-container>
+                    </div>`
+                )
+                    .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
+                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px');
+                const poster = new Image();
+                poster.src = './posters/' + filename + '.jpg';
+                poster.onload = function() {
+                    document.querySelector('.tooltip-container').innerHTML = `
+                        <div class=tooltip-left>
+                            <img src=posters/${filename}.jpg alt=Poster class=movie-poster>
+                        </div>
+                        <div class=tooltip-right>
+                            <div class=title>
+                                <h1>${d.data.title}</h1>
+                            </div>
+                            <p><b>Directed by:</b> ${d.data.director}</p>
+                            <p><b>Produced by:</b> ${movieInfo.producer}</p>
+                            <p><b>Released in:</b> ${d.data.year}</p>
+                            <p><b>Language:</b> ${movieInfo.language}</p>
+                            <p><b>Starring:</b> ${movieInfo.starring}</p>
+                            <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
+                        </div>`
+                };
+                poster.onerror = function() {
+                    document.querySelector('.tooltip-container').innerHTML = ` 
+                        <div class=tooltip-right>
+                            <div class=title>
+                                <h1>${d.data.title}</h1>
+                            </div>
+                            <p><b>Directed by:</b> ${d.data.director}</p>
+                            <p><b>Produced by:</b> ${movieInfo.producer}</p>
+                            <p><b>Released in:</b> ${d.data.year}</p>
+                            <p><b>Language:</b> ${movieInfo.language}</p>
+                            <p><b>Starring:</b> ${movieInfo.starring}</p>
+                            <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
+                        </div>`
+                }
+            })
+            .on('mouseout', function (event, d) {
+                div.transition()
+                    .duration(500)
+                    .style('opacity', 0);
+            });
     
 
         // kuchenzentrum
@@ -227,43 +295,15 @@ drawgraph = (data)=>{
             })
         }
 
-        // zentrumslegende
-        var author = svg.append('text')
-            .style("visibility", "hidden")
-            .style("background", "none")
-            .attr("x", -20)
-            .attr("y", 0)   
-            .text("a simple author");
-            
-        var year = svg.append('text')
-            .attr("x", -20)
-            .attr("y", 20)
-            .attr("text-align", "center")            
-            .style("visibility", "hidden")
-            .style("background", "none")
-            .text("a simple author");
-
         const mouseover_h = function (e, d) {
-            author.text(d.data.director);
-            year.text(d.data.year);
-            author.style("visibility", "visible");
-            year.style("visibility", "visible");
             hovered_dude = d.data.id;
-           updatecake()
-        }
-        const mousemove_h =  function(e, d){
-            // TODO macht das was?
-            // assignees: berthob98
-            //author.style("top", (e.pageY-10)+"px").style("left",(e.pageX+10)+"px");
-            //year.style("top", (e.pageY-10)+"px").style("left",(e.pageX+10)+"px");
-        }
-        const mouseout_h = function (e, d) {
-            author.style("visibility", "hidden");
-            year.style("visibility", "hidden");
-            hovered_dude = -1;
             updatecake()
         }
 
+        const mouseout_h = function (e, d) {
+            hovered_dude = -1;
+            updatecake()
+        }
         
         //beschriftung
 
@@ -278,7 +318,6 @@ drawgraph = (data)=>{
             rotate(${d.x >= Math.PI ? 180 : 0})
             `: ``))
             .on('mouseover', mouseover_h)
-            .on("mousemove", mousemove_h)
             .on('mouseout', mouseout_h)
             .attr("dy", options.form == "circle" ? "0.31em" : 0)
             .attr("x", d => circlehalfchildren(d) ? 6 : -6)
@@ -304,6 +343,27 @@ drawgraph = (data)=>{
 var hovered_dude = -1
 
 
+function convertToPosterFilename(title, year) {
+    title = title.toLowerCase().replaceAll(' ', '_').concat('_', year);
+    return title;
+}
+
+function getMovieInfo(title, year, allMovieInfo) {
+    for (const movieInfo of allMovieInfo) {
+        if (movieInfo.title === title && movieInfo.year === year) {
+            return formatMovieInfo(movieInfo);
+        }
+    }
+}
+
+function formatMovieInfo(movieInfo) {
+    for (const key of Object.keys(movieInfo)) {
+        if (typeof(movieInfo[key]) === "string") {
+            movieInfo[key] = movieInfo[key].replaceAll(";", ", ");
+        }
+    }
+    return movieInfo;
+}
 
 //super dirty state update
 function update() {
