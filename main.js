@@ -1,7 +1,8 @@
-// TODO : in der mitte farbiges kuchendiagramm und bei hover weisses overlay (animieren) und ausgewähltes kuchestück hervorheben
+// done : in der mitte farbiges kuchendiagramm und bei hover weisses overlay (animieren) und ausgewähltes kuchestück hervorheben
 // TODO : split into multiple files
-// TODO : Zeit an achse
+// done : Zeit an achse
 // TODO : Zeitlinien im rectangle
+// TODO : Settings nach unten und kleine an/ein leitung
 
 
 const forms = {
