@@ -124,9 +124,11 @@ drawgraph = (data, allMovieInfo) => {
                             .attr('dy', '-5')
                             .append('textPath')
                             .attr('xlink:href', '#ring' + decade)
+                            .attr('isYear', true)
                             .style('text-anchor','middle')
                             .attr('startOffset', '25%')
                             .text(decade + 's');
+                            // TODO : (optional) on hover ganzen ring vorheben und evtl sogar andere filme etwas ausblenden
                     }
                     break;
             
