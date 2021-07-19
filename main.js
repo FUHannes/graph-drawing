@@ -2,7 +2,8 @@
 // TODO : split into multiple files
 // done : Zeit an achse
 // TODO : Zeitlinien im rectangle
-// TODO : Settings nach unten und kleine an/ein leitung
+// done : Settings toggleable
+// TODO : kleine Anleitung
 
 
 const forms = {
@@ -27,6 +28,7 @@ const sorts = {
 
 // darstellungsoptionen hier eingeben
 options = {
+    show : false,
     show_titles: true,
     show_timescale: true,
     show_pie: false ,//||true ,

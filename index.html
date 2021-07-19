@@ -9,7 +9,11 @@
 </head>
 <body>
     <div id = "wrapper">
-        <div id="toggles">
+      <div style="padding-bottom: .5em;" >
+        <input type="checkbox" id="options" name="toggles0" onclick="document.getElementById('toggles').hidden=options.show;options.show^=1;">
+        <label >show settings </label>
+      </div>
+        <div id="toggles" hidden>
             <form>
                 <fieldset>
                 <legend>Settings</legend>
