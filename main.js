@@ -190,8 +190,6 @@ drawgraph = (data, allMovieInfo) => {
                 const tooltipStyle = window.getComputedStyle(tooltip, null);
                 const tooltipMaxWidth = parseInt(tooltipStyle.getPropertyValue('max-width'));
                 const tooltipMaxHeight = parseInt(tooltipStyle.getPropertyValue('max-height'));
-                const filename = convertToPosterFilename(d.data.title, d.data.year);
-                const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 const cursorOffsetY = 28;
                 const verticalScroll = document.querySelector('html').scrollTop;
                 let verticalPosition;
@@ -219,6 +217,8 @@ drawgraph = (data, allMovieInfo) => {
                     .style('top', verticalPosition + 'px')
                     .style('background-color',color(d))
                 const poster = new Image();
+                const filename = convertToPosterFilename(d.data.title, d.data.year);
+                const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 poster.src = './posters/' + filename + '.jpg';
 
                 const infoHTML = ` 
