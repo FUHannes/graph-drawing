@@ -88,7 +88,7 @@ div.tooltip {
   max-height: 440px;
   padding: 2px;				
   font: 12px sans-serif;		
-  background: lightsteelblue;	
+  /* background: lightsteelblue;*/	
   border: 0px;		
   border-radius: 8px;			
   pointer-events: none;

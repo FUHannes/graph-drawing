@@ -201,39 +201,33 @@ drawgraph = (data, allMovieInfo) => {
                     </div>`
                 )
                     .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
-                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px');
+                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px')
+                    .style('background-color',color(d))
                 const poster = new Image();
                 poster.src = './posters/' + filename + '.jpg';
+
+                const infoHTML = ` 
+                    <div class=tooltip-right>
+                        <div class=title>
+                            <h1>${d.data.title}</h1>
+                        </div>
+                        <p><b>Directed by:</b> ${d.data.director}</p>
+                        <p><b>Produced by:</b> ${movieInfo.producer}</p>
+                        <p><b>Released in:</b> ${d.data.year}</p>
+                        <p><b>Language:</b> ${movieInfo.language}</p>
+                        <p><b>Starring:</b> ${movieInfo.starring}</p>
+                        <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
+                    </div>`
+
                 poster.onload = function() {
                     document.querySelector('.tooltip-container').innerHTML = `
                         <div class=tooltip-left>
                             <img src=posters/${filename}.jpg alt=Poster class=movie-poster>
                         </div>
-                        <div class=tooltip-right>
-                            <div class=title>
-                                <h1>${d.data.title}</h1>
-                            </div>
-                            <p><b>Directed by:</b> ${d.data.director}</p>
-                            <p><b>Produced by:</b> ${movieInfo.producer}</p>
-                            <p><b>Released in:</b> ${d.data.year}</p>
-                            <p><b>Language:</b> ${movieInfo.language}</p>
-                            <p><b>Starring:</b> ${movieInfo.starring}</p>
-                            <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
-                        </div>`
+                        `+infoHTML
                 };
                 poster.onerror = function() {
-                    document.querySelector('.tooltip-container').innerHTML = ` 
-                        <div class=tooltip-right>
-                            <div class=title>
-                                <h1>${d.data.title}</h1>
-                            </div>
-                            <p><b>Directed by:</b> ${d.data.director}</p>
-                            <p><b>Produced by:</b> ${movieInfo.producer}</p>
-                            <p><b>Released in:</b> ${d.data.year}</p>
-                            <p><b>Language:</b> ${movieInfo.language}</p>
-                            <p><b>Starring:</b> ${movieInfo.starring}</p>
-                            <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
-                        </div>`
+                    document.querySelector('.tooltip-container').innerHTML = infoHTML
                 }
             })
             .on('mouseout', function (event, d) {
