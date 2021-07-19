@@ -171,7 +171,7 @@ drawgraph = (data, allMovieInfo) => {
 
 
         var div = d3.select("body").append("div")	
-            .attr("class", "tooltip")				
+            .attr("class", "tooltip-wrapper")				
             .style("opacity", 0);
 
         // knotenpunkte selbst
@@ -186,8 +186,8 @@ drawgraph = (data, allMovieInfo) => {
             .on('mouseover', function (event, d) {
                 const viewportWidth = window.innerWidth;
                 const viewportHeight = window.innerHeight;
-                const tooltip = document.querySelector('.tooltip');
-                const tooltipStyle = window.getComputedStyle(tooltip, null);
+                const tooltipWrapper = document.querySelector('.tooltip-wrapper');
+                const tooltipStyle = window.getComputedStyle(tooltipWrapper, null);
                 const tooltipMaxWidth = parseInt(tooltipStyle.getPropertyValue('max-width'));
                 const tooltipMaxHeight = parseInt(tooltipStyle.getPropertyValue('max-height'));
                 const cursorOffsetY = 28;
@@ -210,7 +210,7 @@ drawgraph = (data, allMovieInfo) => {
                     .duration(200)
                     .style('opacity', 1);
                 div.html(`
-                    <div class=tooltip-container>
+                    <div class=tooltip>
                     </div>`
                 )
                     .style('left', horizontalPosition + 'px')
@@ -235,14 +235,14 @@ drawgraph = (data, allMovieInfo) => {
                     </div>`
 
                 poster.onload = function() {
-                    document.querySelector('.tooltip-container').innerHTML = `
+                    document.querySelector('.tooltip').innerHTML = `
                         <div class=tooltip-left>
                             <img src=posters/${filename}.jpg alt=Poster class=movie-poster>
                         </div>
                         `+infoHTML
                 };
                 poster.onerror = function() {
-                    document.querySelector('.tooltip-container').innerHTML = infoHTML
+                    document.querySelector('.tooltip').innerHTML = infoHTML
                 }
             })
             .on('mouseout', function (event, d) {
