@@ -27,7 +27,7 @@ const sorts = {
 }
 
 // darstellungsoptionen hier eingeben
-options = {
+const options = {
     show : false,
     show_titles: true,
     show_timescale: true,
@@ -63,7 +63,7 @@ async function main() {
     drawgraph(sorted_movie_data, allMovieInfo);
 }
 
-main();
+const data = main();
 
 
 drawgraph = (data, allMovieInfo) => {

@@ -1,7 +1,7 @@
 //this is only for our specific files
 async function prepareData(){
-    directors = await loadCSV("data-prep/csv_data/remakes_nodes.csv");
-    edges = await loadCSV("data-prep/csv_data/remakes_edges.csv",
+    const directors = await loadCSV("data-prep/csv_data/remakes_nodes.csv");
+    const edges = await loadCSV("data-prep/csv_data/remakes_edges.csv",
     function(d) {
         return {
             d_orig: directors[d.director_original-1].name,
@@ -15,7 +15,7 @@ async function prepareData(){
             id: d.director_remake
         };
     });
-    movie_info = await loadCSV("data-prep/csv_data/movie-data.csv", (d) => {
+    const movie_info = await loadCSV("data-prep/csv_data/movie-data.csv", (d) => {
         return {
             title: d.title,
             year: d.year,
@@ -37,8 +37,8 @@ async function prepareData(){
     data = d3.hierarchy(data)
     .sort((a, b) => d3.ascending(a.data.d_orig, b.data.d_orig))
     */
-    grouped  = d3.group(edges, d => d.t_orig)
-    data = d3.hierarchy(grouped)
+    const grouped = d3.group(edges, d => d.t_orig)
+    const data = d3.hierarchy(grouped)
       .each(d => {
         if (d.depth ==1 ){
           d.data.title = d.data[0]
