@@ -96,6 +96,7 @@ div.tooltip {
 div.tooltip-container {
   display: flex;
   height: 100%;
+  max-height: inherit;
 }
 
 div.tooltip-left {
