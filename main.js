@@ -192,6 +192,22 @@ drawgraph = (data, allMovieInfo) => {
                 const tooltipMaxHeight = parseInt(tooltipStyle.getPropertyValue('max-height'));
                 const filename = convertToPosterFilename(d.data.title, d.data.year);
                 const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
+                const cursorOffsetY = 28;
+                const verticalScroll = document.querySelector('html').scrollTop;
+                let verticalPosition;
+                if (event.pageY - cursorOffsetY + tooltipMaxHeight > viewportHeight + verticalScroll) {
+                    verticalPosition = viewportHeight + verticalScroll - tooltipMaxHeight;
+                } else if (event.pageY - cursorOffsetY - verticalScroll < 0) {
+                    verticalPosition = verticalScroll;
+                } else {
+                    verticalPosition = event.pageY - cursorOffsetY;
+                }
+                let horizontalPosition;
+                if (event.pageX + tooltipMaxWidth > viewportWidth) {
+                    horizontalPosition = event.pageX - tooltipMaxWidth;
+                } else {
+                    horizontalPosition = event.pageX;
+                }
                 div.transition()
                     .duration(200)
                     .style('opacity', 1);
@@ -199,8 +215,8 @@ drawgraph = (data, allMovieInfo) => {
                     <div class=tooltip-container>
                     </div>`
                 )
-                    .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
-                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px')
+                    .style('left', horizontalPosition + 'px')
+                    .style('top', verticalPosition + 'px')
                     .style('background-color',color(d))
                 const poster = new Image();
                 poster.src = './posters/' + filename + '.jpg';
