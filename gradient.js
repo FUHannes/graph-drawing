@@ -1,9 +1,11 @@
 // Sample the SVG path uniformly with the specified precision.
 function samples(path, precision) {
+    if (path.getTotalLength == 0) return
     var n = path.getTotalLength(), t = [0], i = 0, dt = precision;
     while ((i += dt) < n) t.push(i);
     t.push(n);
     return t.map(function(t) {
+        //console.log(path)
         var p = path.getPointAtLength(t), a = [p.x, p.y];
         a.t = t / n;
         return a;

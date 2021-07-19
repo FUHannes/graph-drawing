@@ -141,35 +141,39 @@ drawgraph = (data, allMovieInfo) => {
         }
         
         //links zwischen datenpunkten
-        svg.append("g")
-            .attr("isLink", true)
-        .selectAll("path")
-        .data(root.links())
-        // TODO : if we dont want errors this should not forward links starting at root
-        .join("path")
 
-            /*// TODO : Links farbig machen? mit gradient
-            * das ist apparently garnicht so leich
-            * aber mit
-            * https://gist.github.com/mbostock/4163057
-            * sollete es gehen */
-           
-            .attr("d", d=>{
-                switch (options.form) {
-                    case forms.circle:
-                        return d3.linkRadial()
-                        .angle(d => d.x + 10 * (Math.PI / 180))
-                        .radius(d => scale_radius(d))(d)
+            var gradient_color = d3.interpolateRainbow;
 
-                    case forms.rectangle:
-                        return  d3.linkVertical()
-                        .y(scale_x)
-                        .x(d => scale_radius(d))(d)
-                    default:
-                        break;
-                }
-               
-            })
+            svg.append("g")
+                .attr("isLink", true)
+            .selectAll("path")
+            .data(root.links().filter(link => link.source.depth > 0))
+            // done : if we dont want errors this should not forward links starting at root
+            .join("path")
+
+                /*// TODO : Links farbig machen? mit gradient
+                * das ist apparently garnicht so leich
+                * aber mit
+                * https://gist.github.com/mbostock/4163057
+                * sollete es gehen */
+            
+                .attr("d", d=>{
+                    switch (options.form) {
+                        case forms.circle:
+                            return d3.linkRadial()
+                            .angle(d => d.x + 10 * (Math.PI / 180))
+                            .radius(d => scale_radius(d))(d)
+
+                        case forms.rectangle:
+                            return  d3.linkVertical()
+                            .y(scale_x)
+                            .x(d => scale_radius(d))(d)
+                        default:
+                            break;
+                    }
+                
+                })
+
 
         var div = d3.select("body").append("div")	
             .attr("class", "tooltip")				
@@ -379,3 +383,24 @@ function toggleSort(newSort) {
     .sort(options.sort) 
     update()
 }
+
+
+function color_links_with_gradient() {
+    console.log("tryna")
+    var paths = d3.select("svg").selectAll("[isLink]").selectAll("path");
+    var rempaths = paths./*remove().*/nodes();
+    paths
+    .each(function (d, i) {
+        d3.select(this)   
+        .data(/*()=>{
+            console.log(i)
+            return */quads(samples(rempaths[i], 8))
+            /*return [];
+        }*/)
+        .enter().append("path")
+            .style("fill", function(d) { return gradient_color(d.t); })
+            .style("stroke", function(d) { return gradient_color(d.t); })
+            .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 32); });
+    });
+}
+color_links_with_gradient()
