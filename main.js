@@ -386,29 +386,61 @@ function toggleSort(newSort) {
 
 
 function color_links_with_gradient() {
+
+    var gradient_color = d3.interpolateRainbow;
     console.log("tryna")
     var paths = d3.select("svg").selectAll("[isLink]").selectAll("path");
-    var rempaths = paths./*remove().*/nodes();
-    paths
-    .each(function (d, i) {
-        console.log(this)
+    var rempaths = paths.remove().nodes().map(path => quads(samples(path, 4)));
+    // paths//d3.select("svg").selectAll("[isLink]").selectAll("path")
+    // .data(rempaths)
+    // .enter().append('g')
+    // .each(function(d,i){
+    //     console.log(i)
+    //     d3.select(this).selectAll("path")
+    //     .data(d[i])
+    //     .enter().append('path')
+    // /*.each(function (d, i) {
+    //     console.log(this)
            
-        try {
-            d3.select(this)//.selectAll('')
-            .data(/*()=>{
-                console.log(i)
-                return */quads(samples(rempaths[i], 8)), d => d
-                /*return [];
-            }*/)
-            .enter().append("path")
-                .style("fill", function(d) { return gradient_color(d.t); })
-                .style("stroke", function(d) { return gradient_color(d.t); })
-                .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 32); });
+    //     try {
+    //         d3.select(this)//.selectAll('')
+    //         .data(/*()=>{
+    //             console.log(i)
+    //             return quads(samples(rempaths[i], 8)), d => d
+    //             /*return [];
+    //         }*/
+    //         //.join("path")
+    //             .style("fill", (d) => { console.log(d);return gradient_color(d.t); })
+    //             .style("stroke", (d) => gradient_color(d.t))
+    //             .attr("d", (d) => lineJoin(d[0], d[1], d[2], d[3], 32));
         
-        } catch (e) {
-            console.warn(e)
-        }
-    });
+    //     /*} catch (e) {
+    //         console.warn(e)
+    //     }*/
+    // });
+
+    console.log(rempaths)
+    var colourScale = ['red','blue','yellow']
+    //var svg = d3.select('body').append('svg').attr('width', 1000).attr('height', 1000);
+    d3.select("svg").selectAll("[isLink]").selectAll("path")
+        .data(rempaths)
+      .enter().append('g')
+        .each(function(d,i){
+            try {
+                d3.select(this).selectAll('path')
+                    .data(d)
+                .enter().append('path')
+                    .attr("d", function(d){
+                        //console.log(d)
+                        return lineJoin(d[0], d[1], d[2], d[3], 2);
+                    })
+                    .style("fill", function(d)  { console.log(d);return gradient_color(d.t); })
+                    .style("stroke", function(d) {gradient_color(d.t)})
+                    .attr("isLink",false)
+            } catch (err) {
+                console.warn(err)
+            }
+        });
 };
 setTimeout(
 color_links_with_gradient
