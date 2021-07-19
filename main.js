@@ -141,35 +141,34 @@ drawgraph = (data, allMovieInfo) => {
         }
         
         //links zwischen datenpunkten
-        svg.append("g")
-            .attr("isLink", true)
-        .selectAll("path")
-        .data(root.links())
-        // TODO : if we dont want errors this should not forward links starting at root
-        .join("path")
 
-            /*// TODO : Links farbig machen? mit gradient
-            * das ist apparently garnicht so leich
-            * aber mit
-            * https://gist.github.com/mbostock/4163057
-            * sollete es gehen */
-           
-            .attr("d", d=>{
-                switch (options.form) {
-                    case forms.circle:
-                        return d3.linkRadial()
-                        .angle(d => d.x + 10 * (Math.PI / 180))
-                        .radius(d => scale_radius(d))(d)
+            var gradient_color = d3.interpolateRainbow;
+            console.log(root.links())
+            svg.append("g")
+                .attr("isLink", true)
+            .selectAll("path")
+            .data(root.links().filter(link => link.source.depth > 0))
+            // done : if we dont want errors this should not forward links starting at root
+            .join("path")
+                .attr("d", d=>{
+                    switch (options.form) {
+                        case forms.circle:
+                            return d3.linkRadial()
+                            .angle(d => d.x + 10 * (Math.PI / 180))
+                            .radius(d => scale_radius(d))(d)
 
-                    case forms.rectangle:
-                        return  d3.linkVertical()
-                        .y(scale_x)
-                        .x(d => scale_radius(d))(d)
-                    default:
-                        break;
-                }
-               
-            })
+                        case forms.rectangle:
+                            return  d3.linkVertical()
+                            .y(scale_x)
+                            .x(d => scale_radius(d))(d)
+                        default:
+                            break;
+                    }
+                
+                })
+                .attr('start_color', d => color(d.source))
+                .attr('end_color', d => color(d.target))
+
 
         var div = d3.select("body").append("div")	
             .attr("class", "tooltip")				
@@ -365,6 +364,8 @@ function formatMovieInfo(movieInfo) {
 function update() {
     d3.selectAll("#graph").selectChildren().remove()
     drawgraph(data);
+
+    color_links_with_gradient()
     console.log('updated')
 }
 
@@ -379,3 +380,36 @@ function toggleSort(newSort) {
     .sort(options.sort) 
     update()
 }
+
+
+function color_links_with_gradient() {
+
+    var paths = d3.select("svg").selectAll("[isLink]").selectAll("path");
+    var rempaths = paths.remove().nodes().map(path => {var x = quads(samples(path, 4)); x.path = path; return x;});
+
+    d3.select("svg").selectAll("[isLink]").selectAll("path")
+        .data(rempaths)
+      .enter().append('g')
+        .each(function(d,i){
+            try {
+                const p = d3.select(d.path)
+                var gradient_color = d3.interpolateLab(p.attr("start_color"), p.attr("end_color")) //done: color of end and start
+                d3.select(this).selectAll('path')
+                    .data(d)
+                .enter().append('path')
+                    .attr("d", function(d){
+                        //console.log(d)
+                        return lineJoin(d[0], d[1], d[2], d[3], getComputedStyle(document.body).getPropertyValue('--thiccness')*2);
+                    })
+                    .style("fill", function(d)  { return gradient_color(d.t); })
+                    .style("stroke", function(d) {gradient_color(d.t)})
+                    .attr("isLink",false)
+                    .style('opacity', 0.4)
+            } catch (err) {
+                console.warn(err)
+            }
+        });
+};
+setTimeout(
+color_links_with_gradient
+,200);

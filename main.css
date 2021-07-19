@@ -32,8 +32,8 @@ body {
 }
 
 [isLink="true"]{
-    fill: none;
-    stroke: #555;
+    /*fill: none;
+    stroke: #555;*/
     stroke-opacity: 0.4;
     stroke-width: calc(var(--thiccness)*2);
 }

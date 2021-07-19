@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<svg width="960" height="500">
+  <path fill="none" stroke-width="10" d="
+      M86,388
+      L203,330
+      C320,272,554,156,673.8333333333334,165.83333333333334
+      C793.6666666666666,175.66666666666666,799.3333333333334,311.3333333333333,683.5,316.6666666666667
+      C567.6666666666666,322,330.3333333333333,197,211.66666666666666,134.5
+      L93,72"></path>
+</svg>
+<script src="d3.v6.min.js"></script>
+<script src="gradient.js"></script>
+<script>
+
+var color = d3.interpolateRainbow;
+
+var path = d3.select("path").remove();
+
+d3.select("svg").selectAll("path")
+    .data(quads(samples(path.node(), 8)))
+  .enter().append("path")
+    .style("fill", function(d) { return color(d.t); })
+    .style("stroke", function(d) { return color(d.t); })
+    .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 32); });
+
+</script>
