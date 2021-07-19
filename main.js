@@ -391,16 +391,25 @@ function color_links_with_gradient() {
     var rempaths = paths./*remove().*/nodes();
     paths
     .each(function (d, i) {
-        d3.select(this)   
-        .data(/*()=>{
-            console.log(i)
-            return */quads(samples(rempaths[i], 8))
-            /*return [];
-        }*/)
-        .enter().append("path")
-            .style("fill", function(d) { return gradient_color(d.t); })
-            .style("stroke", function(d) { return gradient_color(d.t); })
-            .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 32); });
+        console.log(this)
+           
+        try {
+            d3.select(this)//.selectAll('')
+            .data(/*()=>{
+                console.log(i)
+                return */quads(samples(rempaths[i], 8)), d => d
+                /*return [];
+            }*/)
+            .enter().append("path")
+                .style("fill", function(d) { return gradient_color(d.t); })
+                .style("stroke", function(d) { return gradient_color(d.t); })
+                .attr("d", function(d) { return lineJoin(d[0], d[1], d[2], d[3], 32); });
+        
+        } catch (e) {
+            console.warn(e)
+        }
     });
-}
-color_links_with_gradient()
+};
+setTimeout(
+color_links_with_gradient
+,2000);
