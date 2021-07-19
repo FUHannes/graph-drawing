@@ -1,6 +1,6 @@
 //this is only for our specific files
 async function prepareData(){
-    directors = await loadCSV("data-prep/csv_data/remakes_nodes.csv");
+    directors = await loadCSV("data-prep/csv_data/output_list.csv");
     edges = await loadCSV("data-prep/csv_data/remakes_edges.csv",
     function(d) {
         return {
