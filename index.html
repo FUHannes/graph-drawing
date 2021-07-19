@@ -9,43 +9,48 @@
 </head>
 <body>
     <div id = "wrapper">
-      <div style="padding-bottom: .5em;" >
-        <input type="checkbox" id="options" name="toggles0" onclick="document.getElementById('toggles').hidden=options.show;options.show^=1;">
-        <label >show settings </label>
+      <div style="padding-bottom: .5em;">
+        <input type="checkbox" id="options" name="toggles0" onclick="toggleSettingsVisibility()">
+        <label>show settings</label>
       </div>
-        <div id="toggles" hidden>
+        <div id="settings" hidden>
             <form>
                 <fieldset>
                 <legend>Settings</legend>
-                  <div>
-                    <input type="checkbox" id="titles" name="toggles1" onclick="options.show_titles^=1;update()" checked>
-                    <label>enable titles</label>
+                  <div class="toggles">
+                    <p>Options:</p>
+                    <div>
+                      <input type="checkbox" id="titles" name="toggles1" onclick="options.show_titles^=1;update()" checked>
+                      <label>enable titles</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="year_lines" name="toggles1"  onclick="options.show_timescale^=1;update()" checked>
+                      <label>enable time</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="pie" name="toggles1"  onclick="options.show_pie^=1;update()">
+                      <label>enable pie</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="look" name="toggles1"  onclick="toggleForm()" >
+                      <label>rectangle</label>
+                    </div>
                   </div>
-                  <div>
-                    <input type="checkbox" id="year_lines" name="toggles1"  onclick="options.show_timescale^=1;update()" checked>
-                    <label>enable time</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="pie" name="toggles1"  onclick="options.show_pie^=1;update()" >
-                    <label>enable pie</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="look" name="toggles1"  onclick="toggleForm()" >
-                    <label>rectangle</label>
-                  </div>
-                  <p>Sort By:</p>
-                  <div>
-                    <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('director')" >
-                    <label>director</label>
-                  </div><div>
-                    <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('year')" >
-                    <label>year</label>
-                  </div><div>
-                    <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('remake_amount')" >
-                    <label>most remakes</label>
-                  </div><div>
-                    <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('director_movie_amount')" checked>
-                    <label>most movies</label>
+                  <div class="toggles">
+                    <p>Sort By:</p>
+                    <div>
+                      <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('director')" >
+                      <label>director</label>
+                    </div><div>
+                      <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('year')" >
+                      <label>year</label>
+                    </div><div>
+                      <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('remake_amount')">
+                      <label>most remakes</label>
+                    </div><div>
+                      <input type="radio" id="sort" name="toggles1"  onclick="toggleSort('director_movie_amount')" checked>
+                      <label>most movies</label>
+                    </div>
                   </div>
                 </fieldset>
               </form>

@@ -36,6 +36,16 @@ options = {
     sort:   sorts.director_movie_amount
 }
 
+function toggleSettingsVisibility() {
+    if (options.show === false) {
+        document.querySelector('#settings').style.display = 'inline-block';
+        options.show = true;
+    } else {
+        document.querySelector('#settings').style.display = 'none';
+        options.show = false;
+    }
+}
+
 async function main() {
     const data = await prepareData();
     const movie_data = data.data;
