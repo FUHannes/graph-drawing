@@ -226,7 +226,7 @@ drawgraph = (data, allMovieInfo) => {
                         <div class=title>
                             <h1>${d.data.title}</h1>
                         </div>
-                        <p><b>Directed by:</b> ${d.data.director}</p>
+                        <p><b>Directed by:</b> ${movieInfo.director}</p>
                         <p><b>Produced by:</b> ${movieInfo.producer}</p>
                         <p><b>Released in:</b> ${d.data.year}</p>
                         <p><b>Language:</b> ${movieInfo.language}</p>
