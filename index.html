@@ -10,7 +10,7 @@
 <body>
     <div id = "wrapper">
       <div style="padding-bottom: .5em;">
-        <input type="checkbox" id="options" name="toggles0" onclick="toggleSettingsVisibility()">
+        <input type="checkbox" id="options" name="options">
         <label>show settings</label>
       </div>
         <div id="settings" hidden>
@@ -18,22 +18,29 @@
                 <fieldset>
                 <legend>Settings</legend>
                   <div class="toggles">
+                    <p>Shapes:</p>
+                    <div>
+                      <input type="radio" id="circle" name="shape" checked>
+                      <label>circle</label>
+                    </div>
+                    <div>
+                      <input type="radio" id="rectangle" name="shape">
+                      <label>rectangle</label>
+                    </div>
+                  </div>
+                  <div class="toggles">
                     <p>Options:</p>
                     <div>
-                      <input type="checkbox" id="titles" name="toggles1" onclick="options.show_titles^=1;update()" checked>
+                      <input type="checkbox" id="titles" name="titles" checked>
                       <label>enable titles</label>
                     </div>
                     <div>
-                      <input type="checkbox" id="year_lines" name="toggles1"  onclick="options.show_timescale^=1;update()" checked>
+                      <input type="checkbox" id="year_lines" name="year_lines" checked>
                       <label>enable time</label>
                     </div>
                     <div>
-                      <input type="checkbox" id="pie" name="toggles1"  onclick="options.show_pie^=1;update()">
+                      <input type="checkbox" id="pie" name="pie">
                       <label>enable pie</label>
-                    </div>
-                    <div>
-                      <input type="checkbox" id="look" name="toggles1"  onclick="toggleForm()" >
-                      <label>rectangle</label>
                     </div>
                   </div>
                   <div class="toggles">
