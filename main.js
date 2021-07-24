@@ -240,9 +240,12 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 .attr('start_color', d => color(d.source))
                 .attr('end_color', d => color(d.target))
 
-        var div = d3.select("body").append("div")	
-            .attr("class", "tooltip-wrapper")				
-            .style("opacity", 0);
+        let tooltipWrapper_d3 = d3.select('.tooltip-wrapper');
+        if (tooltipWrapper_d3.empty()) {
+            tooltipWrapper_d3 = d3.select("body").append("div")	
+                .attr("class", "tooltip-wrapper")				
+                .style("opacity", 0);
+        }
 
         // knotenpunkte selbst
         svg.append("g")
@@ -276,10 +279,10 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 } else {
                     horizontalPosition = event.pageX;
                 }
-                div.transition()
+                tooltipWrapper_d3.transition()
                     .duration(200)
                     .style('opacity', 1);
-                div.html(`
+                tooltipWrapper_d3.html(`
                     <div class=tooltip>
                     </div>`
                 )
@@ -316,7 +319,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 }
             })
             .on('mouseout', function (event, d) {
-                div.transition()
+                tooltipWrapper_d3.transition()
                     .duration(500)
                     .style('opacity', 0);
             });
