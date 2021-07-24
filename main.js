@@ -74,6 +74,34 @@ function registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes)
         options.shape = shapes.rectangle;
         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
     });
+
+    const directorSort = document.querySelector('#sort-director');
+    directorSort.addEventListener('click', () => {
+        options.sort = sorts.director;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const yearSort = document.querySelector('#sort-year');
+    yearSort.addEventListener('click', () => {
+        options.sort = sorts.year;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const mostRemakesSort = document.querySelector('#sort-most-remakes');
+    mostRemakesSort.addEventListener('click', () => {
+        options.sort = sorts.remake_amount;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const mostMoviesSort = document.querySelector('#sort-most-movies');
+    mostMoviesSort.addEventListener('click', () => {
+        options.sort = sorts.director_movie_amount;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
 }
 
 function toggleSettingsVisibility(options) {
@@ -424,15 +452,6 @@ function updateGraph(sorted_movie_data, allMovieInfo, options, shapes) {
     color_links_with_gradient()
     console.log('updated');
 }
-
-function toggleSort(newSort) {
-    console.log(newSort, sorts[newSort])
-    options.sort = sorts[newSort]
-    data=data
-    .sort(options.sort) 
-    update()
-}
-
 
 function color_links_with_gradient() {
 
