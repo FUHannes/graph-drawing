@@ -86,6 +86,7 @@ drawgraph = (data, allMovieInfo) => {
         }
         // TODO : remove || 0 to make fakers black (einmal cooles feature draus bauen)
         const color = (d)=>`hsl(${((anzahl_filme_pro_director[d.data.id]|| 0)+[d.data.id])*10},100%,50%)`
+        const backgroundcolor = (d)=>`hsl(${((anzahl_filme_pro_director[d.data.id]|| 0)+[d.data.id])*10},100%,80%)`
 
         //nur in rectangle form
         const scale_x = d => d.x*200
@@ -215,7 +216,7 @@ drawgraph = (data, allMovieInfo) => {
                 )
                     .style('left', horizontalPosition + 'px')
                     .style('top', verticalPosition + 'px')
-                    .style('background-color',color(d))
+                    .style('background-color', backgroundcolor(d))
                 const poster = new Image();
                 const filename = convertToPosterFilename(d.data.title, d.data.year);
                 const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
