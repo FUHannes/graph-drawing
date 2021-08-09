@@ -9,9 +9,9 @@
 </head>
 <body>
     <div id = "wrapper">
-      <div style="padding-bottom: .5em;">
-        <input type="checkbox" id="options" name="options">
-        <label>show settings</label>
+      <div style="padding-bottom: .5em;" >
+        <input type="checkbox" id="options" name="toggles0" onclick="document.getElementById('settings').hidden=options.show;options.show^=1;">
+        <label >show settings </label>
       </div>
         <div id="settings" hidden>
             <form>
