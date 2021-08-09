@@ -409,6 +409,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
 
     d3.select("#graph").append(mainchart)
     
+    color_links_with_gradient();
 
 }
 
@@ -466,7 +467,6 @@ function populateTooltipHTML(movieInfo, nodeData) {
 function updateGraph(sorted_movie_data, allMovieInfo, options, shapes) {
     d3.selectAll("#graph").selectChildren().remove();
     drawGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    color_links_with_gradient()
     console.log('updated');
 }
 
@@ -498,6 +498,4 @@ function color_links_with_gradient() {
             }
         });
 };
-setTimeout(
-color_links_with_gradient
-,200);
+
