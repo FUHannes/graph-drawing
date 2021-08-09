@@ -222,19 +222,7 @@ drawgraph = (data, allMovieInfo) => {
                 const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 poster.src = './posters/' + filename + '.jpg';
 
-                const infoHTML = ` 
-                    <div class=tooltip-right>
-                        <div class=title>
-                            <h1>${d.data.title}</h1>
-                        </div>
-                        <p><b>Directed by:</b> ${movieInfo.director}</p>
-                        <p><b>Produced by:</b> ${movieInfo.producer}</p>
-                        <p><b>Released in:</b> ${d.data.year}</p>
-                        <p><b>Language:</b> ${movieInfo.language}</p>
-                        <p><b>Starring:</b> ${movieInfo.starring}</p>
-                        <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
-                    </div>`
-
+                const infoHTML = populateTooltipHTML(movieInfo, d.data);
                 poster.onload = function() {
                     document.querySelector('.tooltip').innerHTML = `
                         <div class=tooltip-left>
@@ -375,6 +363,31 @@ function formatMovieInfo(movieInfo) {
         }
     }
     return movieInfo;
+}
+
+function populateTooltipHTML(movieInfo, nodeData) {
+    let html = `
+        <div class=tooltip-right>
+            <div class=title>
+                <h1>${nodeData.title}</h1>
+            </div>
+            <p><b>Directed by:</b> ${movieInfo.director}</p>`;
+
+    if (movieInfo.producer !== '') {
+        html = html.concat(`<p><b>Produced by:</b> ${movieInfo.producer}</p>`);
+    }
+    html = html.concat(`<p><b>Released in:</b> ${nodeData.year}</p>`);
+    if (movieInfo.language !== '') {
+        html = html.concat(`<p><b>Language:</b> ${movieInfo.language}</p>`);
+    }
+    if (movieInfo.starring !== '') {
+        html = html.concat(`<p><b>Starring:</b> ${movieInfo.starring}</p>`);
+    }
+    if (movieInfo.running_time !== '') {
+        html = html.concat(`<p><b>Running time:</b> ${movieInfo.running_time} min.</p>`);
+    }
+    html.concat(`</div>`);
+    return html;
 }
 
 //super dirty state update
