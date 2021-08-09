@@ -5,11 +5,113 @@
 // done : Settings toggleable
 // TODO : kleine Anleitung
 
+document.addEventListener('DOMContentLoaded', main);
 
-const forms = {
-    "circle":"circle", 
-    "rectangle":"rectangle"
-};Object.freeze(forms)
+async function main() {
+    const shapes = {
+        "circle": "circle", 
+        "rectangle": "rectangle"
+    }; Object.freeze(shapes);
+
+    const options = {
+        show: false,
+        show_titles: true,
+        show_timescale: true,
+        show_pie: false,//||true ,
+        shape: shapes.circle,
+        sort: sorts.director_movie_amount
+    };
+
+    const data = await prepareData();
+    const movie_data = data.data;
+    const allMovieInfo = data.info;
+    anzahl_filme_pro_director = {}
+    movie_data.each(d => {if (d.depth == 1 ){
+        anzahl_filme_pro_director[d.data.id] = (anzahl_filme_pro_director[d.data.id] || 0)+1
+    }})
+    movie_data.each(d => {
+        d.data.director_origs_amount = anzahl_filme_pro_director[d.data.id]
+    })
+    sorted_movie_data = movie_data
+        .sort(sorts.director)
+        .sort(options.sort);
+    drawGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes);
+}
+
+function registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes) {
+    const showSettingsOption = document.querySelector('#options');
+    showSettingsOption.addEventListener('click', () => {
+        toggleSettingsVisibility(options)
+    });
+
+    const titlesOption = document.querySelector('#titles');
+    titlesOption.addEventListener('click', () => {
+        options.show_titles = !options.show_titles;
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+    
+    const timeLegendOption = document.querySelector('#year_lines');
+    timeLegendOption.addEventListener('click', () => {
+        options.show_timescale = !options.show_timescale;
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const pieOption = document.querySelector('#pie');
+    pieOption.addEventListener('click', () => {
+        options.show_pie = !options.show_pie;
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const circleOption = document.querySelector('#circle');
+    circleOption.addEventListener('click', () => {
+        options.shape = shapes.circle;
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const rectangleOption = document.querySelector('#rectangle');
+    rectangleOption.addEventListener('click', () => {
+        options.shape = shapes.rectangle;
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const directorSort = document.querySelector('#sort-director');
+    directorSort.addEventListener('click', () => {
+        options.sort = sorts.director;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const yearSort = document.querySelector('#sort-year');
+    yearSort.addEventListener('click', () => {
+        options.sort = sorts.year;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const mostRemakesSort = document.querySelector('#sort-most-remakes');
+    mostRemakesSort.addEventListener('click', () => {
+        options.sort = sorts.remake_amount;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+
+    const mostMoviesSort = document.querySelector('#sort-most-movies');
+    mostMoviesSort.addEventListener('click', () => {
+        options.sort = sorts.director_movie_amount;
+        sorted_movie_data.sort(options.sort);
+        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+    });
+}
+
+function toggleSettingsVisibility(options) {
+    options.show = !options.show;
+    if (options.show === false) {
+        document.querySelector('#settings').style.display = 'none';
+    } else {
+        document.querySelector('#settings').style.display = 'inline-block';
+    }
+}
 
 const sorts = {
     director:       (a, b) => d3.ascending(a.data.id, b.data.id),
@@ -26,37 +128,7 @@ const sorts = {
     director_movie_amount: (a, b) =>  d3.ascending(a.data.director_origs_amount, b.data.director_origs_amount),
 }
 
-// darstellungsoptionen hier eingeben
-options = {
-    show : false,
-    show_titles: true,
-    show_timescale: true,
-    show_pie: false ,//||true ,
-    form:   forms.circle, //&& forms.rectangle,
-    sort:   sorts.director_movie_amount
-}
-
-async function main() {
-    const data = await prepareData();
-    const movie_data = data.data;
-    const allMovieInfo = data.info;
-    anzahl_filme_pro_director = {}
-    movie_data.each(d => {if (d.depth == 1 ){
-        anzahl_filme_pro_director[d.data.id] = (anzahl_filme_pro_director[d.data.id] || 0)+1
-    }})
-    movie_data.each(d => {
-        d.data.director_origs_amount = anzahl_filme_pro_director[d.data.id]
-    })
-    sorted_movie_data = movie_data
-        .sort(sorts.director)
-        .sort(options.sort);
-    drawgraph(sorted_movie_data, allMovieInfo);
-}
-
-main();
-
-
-drawgraph = (data, allMovieInfo) => {
+function drawGraph(data, allMovieInfo, options, shapes) {
     width = 954
     radius = width / 2
 
@@ -100,13 +172,13 @@ drawgraph = (data, allMovieInfo) => {
                 translate(${scale_radius(d)},${scale_x(d)})
                 `,
             
-        }[options.form]}
+        }[options.shape]}
 
 
         //jahrzenteringe
         if (options.show_timescale){
-            switch (options.form) {
-                case forms.circle:
+            switch (options.shape) {
+                case shapes.circle:
                     for (decade = 1920; decade < 2010; decade += 10) {
                         // Use arc instead of circle because it is simpler to
                         // get text to go along the path.
@@ -141,7 +213,6 @@ drawgraph = (data, allMovieInfo) => {
         }
         
         //links zwischen datenpunkten
-
             var gradient_color = d3.interpolateRainbow;
             console.log(root.links())
             svg.append("g")
@@ -151,13 +222,13 @@ drawgraph = (data, allMovieInfo) => {
             // done : if we dont want errors this should not forward links starting at root
             .join("path")
                 .attr("d", d=>{
-                    switch (options.form) {
-                        case forms.circle:
+                    switch (options.shape) {
+                        case shapes.circle:
                             return d3.linkRadial()
                             .angle(d => d.x + 10 * (Math.PI / 180))
                             .radius(d => scale_radius(d))(d)
 
-                        case forms.rectangle:
+                        case shapes.rectangle:
                             return  d3.linkVertical()
                             .y(scale_x)
                             .x(d => scale_radius(d))(d)
@@ -169,10 +240,12 @@ drawgraph = (data, allMovieInfo) => {
                 .attr('start_color', d => color(d.source))
                 .attr('end_color', d => color(d.target))
 
-
-        var div = d3.select("body").append("div")	
-            .attr("class", "tooltip")				
-            .style("opacity", 0);
+        let tooltipWrapper_d3 = d3.select('.tooltip-wrapper');
+        if (tooltipWrapper_d3.empty()) {
+            tooltipWrapper_d3 = d3.select("body").append("div")	
+                .attr("class", "tooltip-wrapper")				
+                .style("opacity", 0);
+        }
 
         // knotenpunkte selbst
         svg.append("g")
@@ -186,23 +259,39 @@ drawgraph = (data, allMovieInfo) => {
             .on('mouseover', function (event, d) {
                 const viewportWidth = window.innerWidth;
                 const viewportHeight = window.innerHeight;
-                const tooltip = document.querySelector('.tooltip');
-                const tooltipStyle = window.getComputedStyle(tooltip, null);
+                const tooltipWrapper = document.querySelector('.tooltip-wrapper');
+                const tooltipStyle = window.getComputedStyle(tooltipWrapper, null);
                 const tooltipMaxWidth = parseInt(tooltipStyle.getPropertyValue('max-width'));
                 const tooltipMaxHeight = parseInt(tooltipStyle.getPropertyValue('max-height'));
-                const filename = convertToPosterFilename(d.data.title, d.data.year);
-                const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
-                div.transition()
+                const cursorOffsetY = 28;
+                const verticalScroll = document.querySelector('html').scrollTop;
+                let verticalPosition;
+                if (event.pageY - cursorOffsetY + tooltipMaxHeight > viewportHeight + verticalScroll) {
+                    verticalPosition = viewportHeight + verticalScroll - tooltipMaxHeight;
+                } else if (event.pageY - cursorOffsetY - verticalScroll < 0) {
+                    verticalPosition = verticalScroll;
+                } else {
+                    verticalPosition = event.pageY - cursorOffsetY;
+                }
+                let horizontalPosition;
+                if (event.pageX + tooltipMaxWidth > viewportWidth) {
+                    horizontalPosition = event.pageX - tooltipMaxWidth;
+                } else {
+                    horizontalPosition = event.pageX;
+                }
+                tooltipWrapper_d3.transition()
                     .duration(200)
                     .style('opacity', 1);
-                div.html(`
-                    <div class=tooltip-container>
+                tooltipWrapper_d3.html(`
+                    <div class=tooltip>
                     </div>`
                 )
-                    .style('left', (event.pageX + tooltipMaxWidth > viewportWidth ? event.pageX - tooltipMaxWidth : event.pageX) + 'px')
-                    .style('top', (event.pageY - 28 + tooltipMaxHeight > viewportHeight ? event.pageY - tooltipMaxHeight : event.pageY - 28) + 'px')
+                    .style('left', horizontalPosition + 'px')
+                    .style('top', verticalPosition + 'px')
                     .style('background-color',color(d))
                 const poster = new Image();
+                const filename = convertToPosterFilename(d.data.title, d.data.year);
+                const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 poster.src = './posters/' + filename + '.jpg';
 
                 const infoHTML = ` 
@@ -219,25 +308,25 @@ drawgraph = (data, allMovieInfo) => {
                     </div>`
 
                 poster.onload = function() {
-                    document.querySelector('.tooltip-container').innerHTML = `
+                    document.querySelector('.tooltip').innerHTML = `
                         <div class=tooltip-left>
                             <img src=posters/${filename}.jpg alt=Poster class=movie-poster>
                         </div>
                         `+infoHTML
                 };
                 poster.onerror = function() {
-                    document.querySelector('.tooltip-container').innerHTML = infoHTML
+                    document.querySelector('.tooltip').innerHTML = infoHTML
                 }
             })
             .on('mouseout', function (event, d) {
-                div.transition()
+                tooltipWrapper_d3.transition()
                     .duration(500)
                     .style('opacity', 0);
             });
     
 
         // kuchenzentrum
-        if (options.form == forms.circle && options.show_pie){
+        if (options.shape == shapes.circle && options.show_pie){
 
             pie = d3.pie()
             .sort((a, b) => d3.ascending(a[0], b[0]))
@@ -302,21 +391,21 @@ drawgraph = (data, allMovieInfo) => {
         
         //beschriftung
 
-        const circlehalfchildren = d => (!(options.form == "circle") || d.x < Math.PI) === !d.children
+        const circlehalfchildren = d => (!(options.shape == "circle") || d.x < Math.PI) === !d.children
 
         svg.append("g")
             .attr("isTitles", true)
         .selectAll("text")
         .data(root.descendants())
         .join("text")
-            .attr("transform", d => transform(d)+ (options.form == "circle" ? `
+            .attr("transform", d => transform(d)+ (options.shape == "circle" ? `
             rotate(${d.x >= Math.PI ? 180 : 0})
             `: ``))
             .on('mouseover', mouseover_h)
             .on('mouseout', mouseout_h)
-            .attr("dy", options.form == "circle" ? "0.31em" : 0)
+            .attr("dy", options.shape == "circle" ? "0.31em" : 0)
             .attr("x", d => circlehalfchildren(d) ? 6 : -6)
-            .attr("y", d => options.form != "circle" ? 3 : 0)
+            .attr("y", d => options.shape != "circle" ? 3 : 0)
             .attr("text-anchor", d => circlehalfchildren(d) ? "start" : "end")
             .text(d =>  d.data.title )
             .attr("fill",color)
@@ -360,27 +449,12 @@ function formatMovieInfo(movieInfo) {
     return movieInfo;
 }
 
-//super dirty state update
-function update() {
-    d3.selectAll("#graph").selectChildren().remove()
-    drawgraph(data);
-
+function updateGraph(sorted_movie_data, allMovieInfo, options, shapes) {
+    d3.selectAll("#graph").selectChildren().remove();
+    drawGraph(sorted_movie_data, allMovieInfo, options, shapes);
     color_links_with_gradient()
-    console.log('updated')
+    console.log('updated');
 }
-
-function toggleForm() {
-    options.form = (options.form==forms.rectangle)?forms.circle:forms.rectangle;update()
-}
-
-function toggleSort(newSort) {
-    console.log(newSort, sorts[newSort])
-    options.sort = sorts[newSort]
-    data=data
-    .sort(options.sort) 
-    update()
-}
-
 
 function color_links_with_gradient() {
 
