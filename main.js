@@ -151,9 +151,15 @@ function drawGraph(data, allMovieInfo, options, shapes) {
 //Zeitskala 1918-1980 remakes 1927-2018
 
         function scale_year(year){
+            if (isNaN(parseInt(year)+1)){
+                //console.log(year)
+            }
             return 250 *(parseInt(year)-1918)/100 + (options.show_titles ? 200 : 50)
         }
         function scale_radius(d){
+            if (isNaN(parseInt(d.data.year)+1)){
+                console.warn("this object would create an error", d)
+            }
             return scale_year(d.data.year)
         }
         // TODO : remove || 0 to make fakers black (einmal cooles feature draus bauen)
@@ -215,7 +221,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
         
         //links zwischen datenpunkten
             var gradient_color = d3.interpolateRainbow;
-            console.log(root.links())
+            //console.log(root.links())
             svg.append("g")
                 .attr("isLink", true)
             .selectAll("path")
