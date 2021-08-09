@@ -39,70 +39,72 @@ async function main() {
     registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes);
 }
 
-function registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes) {
-    const showSettingsOption = document.querySelector('#options');
-    showSettingsOption.addEventListener('click', () => {
-        toggleSettingsVisibility(options)
-    });
+// TODO : machte das was?
 
-    const titlesOption = document.querySelector('#titles');
-    titlesOption.addEventListener('click', () => {
-        options.show_titles = !options.show_titles;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+// function registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes) {
+//     const showSettingsOption = document.querySelector('#options');
+//     showSettingsOption.addEventListener('click', () => {
+//         toggleSettingsVisibility(options)
+//     });
+
+//     const titlesOption = document.querySelector('#titles');
+//     titlesOption.addEventListener('click', () => {
+//         options.show_titles = !options.show_titles;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
     
-    const timeLegendOption = document.querySelector('#year_lines');
-    timeLegendOption.addEventListener('click', () => {
-        options.show_timescale = !options.show_timescale;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const timeLegendOption = document.querySelector('#year_lines');
+//     timeLegendOption.addEventListener('click', () => {
+//         options.show_timescale = !options.show_timescale;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const pieOption = document.querySelector('#pie');
-    pieOption.addEventListener('click', () => {
-        options.show_pie = !options.show_pie;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const pieOption = document.querySelector('#pie');
+//     pieOption.addEventListener('click', () => {
+//         options.show_pie = !options.show_pie;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const circleOption = document.querySelector('#circle');
-    circleOption.addEventListener('click', () => {
-        options.shape = shapes.circle;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const circleOption = document.querySelector('#circle');
+//     circleOption.addEventListener('click', () => {
+//         options.shape = shapes.circle;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const rectangleOption = document.querySelector('#rectangle');
-    rectangleOption.addEventListener('click', () => {
-        options.shape = shapes.rectangle;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const rectangleOption = document.querySelector('#rectangle');
+//     rectangleOption.addEventListener('click', () => {
+//         options.shape = shapes.rectangle;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const directorSort = document.querySelector('#sort-director');
-    directorSort.addEventListener('click', () => {
-        options.sort = sorts.director;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const directorSort = document.querySelector('#sort-director');
+//     directorSort.addEventListener('click', () => {
+//         options.sort = sorts.director;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const yearSort = document.querySelector('#sort-year');
-    yearSort.addEventListener('click', () => {
-        options.sort = sorts.year;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const yearSort = document.querySelector('#sort-year');
+//     yearSort.addEventListener('click', () => {
+//         options.sort = sorts.year;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const mostRemakesSort = document.querySelector('#sort-most-remakes');
-    mostRemakesSort.addEventListener('click', () => {
-        options.sort = sorts.remake_amount;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const mostRemakesSort = document.querySelector('#sort-most-remakes');
+//     mostRemakesSort.addEventListener('click', () => {
+//         options.sort = sorts.remake_amount;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const mostMoviesSort = document.querySelector('#sort-most-movies');
-    mostMoviesSort.addEventListener('click', () => {
-        options.sort = sorts.director_movie_amount;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
-}
+//     const mostMoviesSort = document.querySelector('#sort-most-movies');
+//     mostMoviesSort.addEventListener('click', () => {
+//         options.sort = sorts.director_movie_amount;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
+// }
 
 function toggleSettingsVisibility(options) {
     options.show = !options.show;
@@ -241,12 +243,10 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 .attr('start_color', d => color(d.source))
                 .attr('end_color', d => color(d.target))
 
-        let tooltipWrapper_d3 = d3.select('.tooltip-wrapper');
-        if (tooltipWrapper_d3.empty()) {
-            tooltipWrapper_d3 = d3.select("body").append("div")	
-                .attr("class", "tooltip-wrapper")				
-                .style("opacity", 0);
-        }
+
+        var div = d3.select("body").append("div")	
+            .attr("class", "tooltip-wrapper")				
+            .style("opacity", 0);
 
         // knotenpunkte selbst
         svg.append("g")
@@ -280,10 +280,10 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 } else {
                     horizontalPosition = event.pageX;
                 }
-                tooltipWrapper_d3.transition()
+                div.transition()
                     .duration(200)
                     .style('opacity', 1);
-                tooltipWrapper_d3.html(`
+                div.html(`
                     <div class=tooltip>
                     </div>`
                 )
@@ -308,7 +308,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 }
             })
             .on('mouseout', function (event, d) {
-                tooltipWrapper_d3.transition()
+                div.transition()
                     .duration(500)
                     .style('opacity', 0);
             });
@@ -409,6 +409,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
 
     d3.select("#graph").append(mainchart)
     
+    color_links_with_gradient();
 
 }
 
@@ -498,6 +499,6 @@ function color_links_with_gradient() {
             }
         });
 };
-setTimeout(
-color_links_with_gradient
-,200);
+// setTimeout(
+// color_links_with_gradient
+// ,1000);
