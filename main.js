@@ -39,70 +39,72 @@ async function main() {
     registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes);
 }
 
-function registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes) {
-    const showSettingsOption = document.querySelector('#options');
-    showSettingsOption.addEventListener('click', () => {
-        toggleSettingsVisibility(options)
-    });
+// TODO : machte das was?
 
-    const titlesOption = document.querySelector('#titles');
-    titlesOption.addEventListener('click', () => {
-        options.show_titles = !options.show_titles;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+// function registerEventHandlers(sorted_movie_data, allMovieInfo, options, shapes) {
+//     const showSettingsOption = document.querySelector('#options');
+//     showSettingsOption.addEventListener('click', () => {
+//         toggleSettingsVisibility(options)
+//     });
+
+//     const titlesOption = document.querySelector('#titles');
+//     titlesOption.addEventListener('click', () => {
+//         options.show_titles = !options.show_titles;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
     
-    const timeLegendOption = document.querySelector('#year_lines');
-    timeLegendOption.addEventListener('click', () => {
-        options.show_timescale = !options.show_timescale;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const timeLegendOption = document.querySelector('#year_lines');
+//     timeLegendOption.addEventListener('click', () => {
+//         options.show_timescale = !options.show_timescale;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const pieOption = document.querySelector('#pie');
-    pieOption.addEventListener('click', () => {
-        options.show_pie = !options.show_pie;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const pieOption = document.querySelector('#pie');
+//     pieOption.addEventListener('click', () => {
+//         options.show_pie = !options.show_pie;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const circleOption = document.querySelector('#circle');
-    circleOption.addEventListener('click', () => {
-        options.shape = shapes.circle;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const circleOption = document.querySelector('#circle');
+//     circleOption.addEventListener('click', () => {
+//         options.shape = shapes.circle;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const rectangleOption = document.querySelector('#rectangle');
-    rectangleOption.addEventListener('click', () => {
-        options.shape = shapes.rectangle;
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const rectangleOption = document.querySelector('#rectangle');
+//     rectangleOption.addEventListener('click', () => {
+//         options.shape = shapes.rectangle;
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const directorSort = document.querySelector('#sort-director');
-    directorSort.addEventListener('click', () => {
-        options.sort = sorts.director;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const directorSort = document.querySelector('#sort-director');
+//     directorSort.addEventListener('click', () => {
+//         options.sort = sorts.director;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const yearSort = document.querySelector('#sort-year');
-    yearSort.addEventListener('click', () => {
-        options.sort = sorts.year;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const yearSort = document.querySelector('#sort-year');
+//     yearSort.addEventListener('click', () => {
+//         options.sort = sorts.year;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const mostRemakesSort = document.querySelector('#sort-most-remakes');
-    mostRemakesSort.addEventListener('click', () => {
-        options.sort = sorts.remake_amount;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
+//     const mostRemakesSort = document.querySelector('#sort-most-remakes');
+//     mostRemakesSort.addEventListener('click', () => {
+//         options.sort = sorts.remake_amount;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
 
-    const mostMoviesSort = document.querySelector('#sort-most-movies');
-    mostMoviesSort.addEventListener('click', () => {
-        options.sort = sorts.director_movie_amount;
-        sorted_movie_data.sort(options.sort);
-        updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
-    });
-}
+//     const mostMoviesSort = document.querySelector('#sort-most-movies');
+//     mostMoviesSort.addEventListener('click', () => {
+//         options.sort = sorts.director_movie_amount;
+//         sorted_movie_data.sort(options.sort);
+//         updateGraph(sorted_movie_data, allMovieInfo, options, shapes);
+//     });
+// }
 
 function toggleSettingsVisibility(options) {
     options.show = !options.show;
@@ -158,6 +160,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
         }
         // TODO : remove || 0 to make fakers black (einmal cooles feature draus bauen)
         const color = (d)=>`hsl(${((anzahl_filme_pro_director[d.data.id]|| 0)+[d.data.id])*10},100%,50%)`
+        const backgroundcolor = (d)=>`hsl(${((anzahl_filme_pro_director[d.data.id]|| 0)+[d.data.id])*10},100%,80%)`
 
         //nur in rectangle form
         const scale_x = d => d.x*200
@@ -240,12 +243,10 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 .attr('start_color', d => color(d.source))
                 .attr('end_color', d => color(d.target))
 
-        let tooltipWrapper_d3 = d3.select('.tooltip-wrapper');
-        if (tooltipWrapper_d3.empty()) {
-            tooltipWrapper_d3 = d3.select("body").append("div")	
-                .attr("class", "tooltip-wrapper")				
-                .style("opacity", 0);
-        }
+
+        var div = d3.select("body").append("div")	
+            .attr("class", "tooltip-wrapper")				
+            .style("opacity", 0);
 
         // knotenpunkte selbst
         svg.append("g")
@@ -279,34 +280,22 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 } else {
                     horizontalPosition = event.pageX;
                 }
-                tooltipWrapper_d3.transition()
+                div.transition()
                     .duration(200)
                     .style('opacity', 1);
-                tooltipWrapper_d3.html(`
+                div.html(`
                     <div class=tooltip>
                     </div>`
                 )
                     .style('left', horizontalPosition + 'px')
                     .style('top', verticalPosition + 'px')
-                    .style('background-color',color(d))
+                    .style('background-color', backgroundcolor(d))
                 const poster = new Image();
                 const filename = convertToPosterFilename(d.data.title, d.data.year);
                 const movieInfo = getMovieInfo(d.data.title, d.data.year, allMovieInfo);
                 poster.src = './posters/' + filename + '.jpg';
 
-                const infoHTML = ` 
-                    <div class=tooltip-right>
-                        <div class=title>
-                            <h1>${d.data.title}</h1>
-                        </div>
-                        <p><b>Directed by:</b> ${d.data.director}</p>
-                        <p><b>Produced by:</b> ${movieInfo.producer}</p>
-                        <p><b>Released in:</b> ${d.data.year}</p>
-                        <p><b>Language:</b> ${movieInfo.language}</p>
-                        <p><b>Starring:</b> ${movieInfo.starring}</p>
-                        <p><b>Running time:</b> ${movieInfo.running_time} min.</p>
-                    </div>`
-
+                const infoHTML = populateTooltipHTML(movieInfo, d.data);
                 poster.onload = function() {
                     document.querySelector('.tooltip').innerHTML = `
                         <div class=tooltip-left>
@@ -319,7 +308,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
                 }
             })
             .on('mouseout', function (event, d) {
-                tooltipWrapper_d3.transition()
+                div.transition()
                     .duration(500)
                     .style('opacity', 0);
             });
@@ -420,6 +409,7 @@ function drawGraph(data, allMovieInfo, options, shapes) {
 
     d3.select("#graph").append(mainchart)
     
+    color_links_with_gradient();
 
 }
 
@@ -449,9 +439,36 @@ function formatMovieInfo(movieInfo) {
     return movieInfo;
 }
 
-function updateGraph(sorted_movie_data, allMovieInfo, options, shapes) {
-    d3.selectAll("#graph").selectChildren().remove();
-    drawGraph(sorted_movie_data, allMovieInfo, options, shapes);
+function populateTooltipHTML(movieInfo, nodeData) {
+    let html = `
+        <div class=tooltip-right>
+            <div class=title>
+                <h1>${nodeData.title}</h1>
+            </div>
+            <p><b>Directed by:</b> ${movieInfo.director}</p>`;
+
+    if (movieInfo.producer !== '') {
+        html = html.concat(`<p><b>Produced by:</b> ${movieInfo.producer}</p>`);
+    }
+    html = html.concat(`<p><b>Released in:</b> ${nodeData.year}</p>`);
+    if (movieInfo.language !== '') {
+        html = html.concat(`<p><b>Language:</b> ${movieInfo.language}</p>`);
+    }
+    if (movieInfo.starring !== '') {
+        html = html.concat(`<p><b>Starring:</b> ${movieInfo.starring}</p>`);
+    }
+    if (movieInfo.running_time !== '') {
+        html = html.concat(`<p><b>Running time:</b> ${movieInfo.running_time} min.</p>`);
+    }
+    html.concat(`</div>`);
+    return html;
+}
+
+//super dirty state update
+function update() {
+    d3.selectAll("#graph").selectChildren().remove()
+    drawgraph(data);
+
     color_links_with_gradient()
     console.log('updated');
 }
@@ -484,6 +501,6 @@ function color_links_with_gradient() {
             }
         });
 };
-setTimeout(
-color_links_with_gradient
-,200);
+// setTimeout(
+// color_links_with_gradient
+// ,1000);
